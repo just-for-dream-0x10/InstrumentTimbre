@@ -1,0 +1,22 @@
+{
+  "erhu1.wav": {
+    "standard": {
+      "json": "./extracted_features/erhu1_timbre.json",
+      "pickle": "./extracted_features/erhu1_timbre.pkl",
+      "numpy_level1": "./extracted_features/erhu1_timbre_level1.npy",
+      "numpy_level2": "./extracted_features/erhu1_timbre_level2.npy",
+      "numpy_level3": "./extracted_features/erhu1_timbre_level3.npy"
+    },
+    "advanced": "./extracted_features/erhu1_advanced_features.pkl"
+  },
+  "erhu2.wav": {
+    "standard": {
+      "json": "./extracted_features/erhu2_timbre.json",
+      "pickle": "./extracted_features/erhu2_timbre.pkl",
+      "numpy_level1": "./extracted_features/erhu2_timbre_level1.npy",
+      "numpy_level2": "./extracted_features/erhu2_timbre_level2.npy",
+      "numpy_level3": "./extracted_features/erhu2_timbre_level3.npy"
+    },
+    "advanced": "./extracted_features/erhu2_advanced_features.pkl"
+  }
+}
