@@ -1,0 +1,20 @@
+{
+  "model_type": "chinese_instrument_classifier",
+  "format": "torchscript",
+  "input_shape": [
+    1,
+    50
+  ],
+  "output_shape": [
+    1,
+    1
+  ],
+  "class_names": [
+    "erhu"
+  ],
+  "conversion_date": "2025-10-16T17:09:28.278621",
+  "usage": {
+    "python": "import torch; model = torch.jit.load(\"chinese_instrument_enhanced_script.pt\")",
+    "cpp": "torch::jit::script::Module module = torch::jit::load(\"model.pt\");"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "model_type": "chinese_instrument_classifier",
+  "input_shape": [
+    1,
+    50
+  ],
+  "output_shape": [
+    1,
+    1
+  ],
+  "class_names": [
+    "erhu"
+  ],
+  "feature_size": 50,
+  "enhanced_features": true,
+  "conversion_date": "2025-10-16T17:09:20.398213",
+  "usage": {
+    "python": "import onnxruntime; session = onnxruntime.InferenceSession(\"model.onnx\")",
+    "javascript": "const session = new onnx.InferenceSession(\"model.onnx\");",
+    "input_name": "audio_features",
+    "output_name": "predictions"
+  }
+}
