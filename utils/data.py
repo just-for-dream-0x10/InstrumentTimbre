@@ -1,7 +1,5 @@
 """
-Data Processing and Dataset Definition Module
-
-Contains dataset classes, data loaders, and dataset splitting utilities for instrument timbre tasks.
+Data processing tools and dataset classes
 """
 
 import os

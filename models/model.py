@@ -1,8 +1,3 @@
-"""
-Instrument Timbre Model - Definition for Instrument Timbre Analysis and Conversion Model
-
-Includes the main model class, feature extraction, timbre application, and other core functionalities.
-"""
 import os
 import torch
 import torch.nn as nn

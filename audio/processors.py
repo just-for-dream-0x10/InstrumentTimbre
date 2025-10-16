@@ -1,8 +1,3 @@
-"""
-Audio Processing Module
-
-Provides audio loading, saving, feature extraction, and effects chain utilities for timbre analysis and conversion tasks.
-"""
 import os
 import numpy as np
 import torch
