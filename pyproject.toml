@@ -9,6 +9,7 @@ description = "A toolkit for instrument timbre analysis, manipulation, and conve
 authors = [
     { name="TimWood0x10", email="jinhopers@gmail.com" }
 ]
+
 dependencies = [
     "numpy>=1.24.3",
     "scipy>=1.11.3",

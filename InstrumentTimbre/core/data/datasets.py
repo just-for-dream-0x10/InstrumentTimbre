@@ -51,23 +51,66 @@ class AudioDataset(Dataset):
         files = []
         labels = []
         
-        for class_dir in self.data_dir.iterdir():
-            if not class_dir.is_dir():
-                continue
+        # Check if data is organized in subdirectories (class folders)
+        subdirs = [d for d in self.data_dir.iterdir() if d.is_dir()]
+        
+        if subdirs:
+            # Class-based organization: data/erhu/*.wav, data/pipa/*.wav
+            self.logger.info("Found class-based directory structure")
+            for class_dir in subdirs:
+                class_name = class_dir.name
+                class_files = []
                 
-            class_name = class_dir.name
-            class_files = []
+                for file_path in class_dir.iterdir():
+                    if file_path.suffix.lower() in self.audio_extensions:
+                        class_files.append(file_path)
+                
+                # Apply max_files limit per class if specified
+                if self.max_files:
+                    class_files = class_files[:self.max_files // len(subdirs)]
+                
+                files.extend(class_files)
+                labels.extend([class_name] * len(class_files))
+        else:
+            # Flat organization: all files in one directory, infer class from filename
+            self.logger.info("Found flat directory structure, inferring classes from filenames")
+            all_files = [f for f in self.data_dir.iterdir() 
+                        if f.is_file() and f.suffix.lower() in self.audio_extensions]
             
-            for file_path in class_dir.iterdir():
-                if file_path.suffix.lower() in self.audio_extensions:
-                    class_files.append(file_path)
+            for file_path in all_files:
+                # Infer class from filename
+                filename = file_path.stem.lower()
+                
+                # Try to detect instrument from filename
+                if 'erhu' in filename or '二胡' in filename:
+                    class_name = 'erhu'
+                elif 'pipa' in filename or '琵琶' in filename:
+                    class_name = 'pipa'
+                elif 'guzheng' in filename or '古筝' in filename:
+                    class_name = 'guzheng'
+                elif 'dizi' in filename or '笛子' in filename:
+                    class_name = 'dizi'
+                elif 'guqin' in filename or '古琴' in filename:
+                    class_name = 'guqin'
+                elif 'piano' in filename:
+                    class_name = 'piano'
+                elif 'bass' in filename:
+                    class_name = 'bass'
+                elif 'drum' in filename:
+                    class_name = 'drums'
+                elif 'vocal' in filename:
+                    class_name = 'vocals'
+                else:
+                    # Default classification for songs
+                    class_name = 'mixed'
+                
+                files.append(file_path)
+                labels.append(class_name)
             
-            # Apply max_files limit per class if specified
-            if self.max_files:
-                class_files = class_files[:self.max_files // len(list(self.data_dir.iterdir()))]
-            
-            files.extend(class_files)
-            labels.extend([class_name] * len(class_files))
+            # Apply max_files limit if specified
+            if self.max_files and len(files) > self.max_files:
+                files = files[:self.max_files]
+                labels = labels[:self.max_files]
         
         return files, labels
     

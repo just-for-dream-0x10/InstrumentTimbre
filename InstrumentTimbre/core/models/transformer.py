@@ -12,8 +12,18 @@ from .base import BaseModel
 
 class TransformerClassifier(BaseModel):
     """
-    Transformer-based classifier for Chinese instrument analysis
-    Placeholder implementation for future development
+    Transformer-based classifier for Chinese instrument timbre analysis
+    
+    This model uses self-attention mechanisms to capture long-range dependencies
+    in audio features, particularly useful for analyzing the complex timbral
+    relationships in Chinese traditional instruments.
+    
+    Features:
+    - Multi-head self-attention for feature interaction modeling
+    - Positional encoding for sequence-aware processing
+    - Layer normalization and residual connections
+    - Configurable depth and attention heads
+    - Support for both single-frame and sequence inputs
     """
     
     def __init__(self, config: Optional[Dict[str, Any]] = None):

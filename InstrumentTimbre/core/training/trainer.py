@@ -5,7 +5,13 @@ Main training orchestrator for InstrumentTimbre models
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
+try:
+    from torch.utils.tensorboard import SummaryWriter
+    TENSORBOARD_AVAILABLE = True
+except ImportError:
+    # Fallback if tensorboard not available
+    SummaryWriter = None
+    TENSORBOARD_AVAILABLE = False
 import numpy as np
 from pathlib import Path
 from typing import Dict, Any, Optional, Callable
@@ -71,11 +77,13 @@ class Trainer:
         self.best_val_loss = float('inf')
         
         # TensorBoard logging
-        if config.get('use_tensorboard', True):
+        if config.get('use_tensorboard', True) and TENSORBOARD_AVAILABLE:
             log_dir = config.get('log_dir', 'runs')
             self.writer = SummaryWriter(log_dir)
         else:
             self.writer = None
+            if config.get('use_tensorboard', True) and not TENSORBOARD_AVAILABLE:
+                self.logger.warning("TensorBoard not available, logging disabled")
         
         # Early stopping
         self.patience = config.get('patience', 10)
