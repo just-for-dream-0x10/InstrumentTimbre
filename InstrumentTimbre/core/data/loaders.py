@@ -12,8 +12,8 @@ from .datasets import AudioDataset, ChineseInstrumentDataset
 def get_dataloader(dataset: torch.utils.data.Dataset, 
                    batch_size: int = 32,
                    shuffle: bool = True,
-                   num_workers: int = 4,
-                   pin_memory: bool = True) -> DataLoader:
+                   num_workers: int = 0,  # 0 for faster loading with cached features
+                   pin_memory: bool = False) -> DataLoader:  # Disable for MPS compatibility
     """
     Create a DataLoader from a dataset
     
@@ -58,15 +58,18 @@ def create_train_val_loaders(data_dir: str,
     """
     logger = logging.getLogger(__name__)
     
-    # Create dataset
+    # Create fast dataset with pre-computed features
+    from .fast_dataset import FastAudioDataset
+    from ..features.fast import FastFeatureExtractor
+    
     if use_chinese_features:
-        dataset = ChineseInstrumentDataset(
+        fast_extractor = FastFeatureExtractor(config)
+        dataset = FastAudioDataset(
             data_dir=data_dir,
-            config=config,
-            enhanced_features=True
+            feature_extractor=fast_extractor
         )
     else:
-        dataset = AudioDataset(data_dir=data_dir)
+        dataset = FastAudioDataset(data_dir=data_dir)
     
     # Split dataset
     total_size = len(dataset)

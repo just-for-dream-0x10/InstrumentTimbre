@@ -7,24 +7,24 @@ data:
   use_chinese_features: true
   sample_rate: 22050
 
-# Feature extraction
+# Feature extraction (optimized for speed)
 features:
   sample_rate: 22050
-  hop_length: 512
-  n_fft: 2048
-  n_mfcc: 50
+  hop_length: 1024  # Larger hop for faster processing
+  n_fft: 1024       # Smaller FFT for speed
+  n_mfcc: 13        # Standard MFCC count
 
-# Model configuration
+# Model configuration (auto-detect input dimension)
 model:
   type: enhanced_cnn
-  input_dim: 128
-  hidden_dims: [256, 512, 256, 128]
-  fc_dims: [512, 256]
-  num_classes: 5
+  input_dim: auto    # Will be auto-detected from features
+  hidden_dims: [64, 128, 64]  # Lightweight model
+  fc_dims: [128, 64] # Smaller fully connected layers
+  num_classes: auto  # Will be auto-detected from data
   dropout_rate: 0.1
   use_batch_norm: true
-  use_residual: true
-  use_attention: true
+  use_residual: false  # Disable for speed
+  use_attention: false # Disable for speed
 
 # Training settings
 training:

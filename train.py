@@ -119,10 +119,23 @@ def main():
             use_chinese_features=True
         )
         
-        # Get dataset info
-        num_classes = len(train_loader.dataset.dataset.class_names)
-        class_names = train_loader.dataset.dataset.class_names
+        # Get dataset info and auto-detect dimensions
+        # Handle both full dataset and subset (after train/val split)
+        if hasattr(train_loader.dataset, 'class_names'):
+            # Full dataset
+            num_classes = len(train_loader.dataset.class_names)
+            class_names = train_loader.dataset.class_names
+            feature_dim = train_loader.dataset.get_feature_dim()
+        else:
+            # Subset after train/val split
+            full_dataset = train_loader.dataset.dataset
+            num_classes = len(full_dataset.class_names)
+            class_names = full_dataset.class_names
+            feature_dim = full_dataset.get_feature_dim()
+        
+        # Update model config (always override for safety)
         config['model']['num_classes'] = num_classes
+        config['model']['input_dim'] = feature_dim
         
         logger.info(f"Dataset: {num_classes} classes")
         logger.info(f"Classes: {class_names}")

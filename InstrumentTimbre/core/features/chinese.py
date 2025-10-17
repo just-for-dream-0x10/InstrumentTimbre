@@ -27,11 +27,11 @@ class ChineseInstrumentAnalyzer(BaseFeatureExtractor):
         """
         super().__init__(config)
         
-        # Default configuration
+        # Default configuration (optimized for speed)
         self.sample_rate = self.config.get('sample_rate', 22050)
-        self.hop_length = self.config.get('hop_length', 512)
-        self.n_fft = self.config.get('n_fft', 2048)
-        self.n_mfcc = self.config.get('n_mfcc', 50)
+        self.hop_length = self.config.get('hop_length', 1024)  # Larger hop for speed
+        self.n_fft = self.config.get('n_fft', 1024)  # Smaller FFT for speed
+        self.n_mfcc = self.config.get('n_mfcc', 13)  # Standard MFCC count
         
         # Chinese instrument specific parameters
         self.instrument_ranges = self.config.get('instrument_ranges', {
