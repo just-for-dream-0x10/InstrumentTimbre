@@ -70,3 +70,5 @@ aim/
 *.mid
 
 saved_models/
+
+.DS_Store

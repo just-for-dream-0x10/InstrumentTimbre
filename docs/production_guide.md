@@ -7,6 +7,7 @@ This guide covers deploying InstrumentTimbre in production environments with rea
 ## 📋 Pre-Deployment Checklist
 
 ### System Requirements Validation
+
 - [ ] **CPU**: 8+ cores for concurrent processing
 - [ ] **Memory**: 32GB RAM for production loads
 - [ ] **Storage**: SSD with 100GB+ free space
@@ -14,6 +15,7 @@ This guide covers deploying InstrumentTimbre in production environments with rea
 - [ ] **OS**: Linux (Ubuntu 20.04+) or CentOS 8+ recommended
 
 ### Performance Benchmarks
+
 - [ ] **Latency**: <5 seconds per 3-minute audio file
 - [ ] **Throughput**: 100+ concurrent predictions
 - [ ] **Accuracy**: >95% on validation data
@@ -22,6 +24,7 @@ This guide covers deploying InstrumentTimbre in production environments with rea
 ## 🚀 Deployment Strategies
 
 ### Option 1: Docker Containerization
+
 ```bash
 # Build production container
 docker build -t instrumenttimbre:production .
@@ -37,6 +40,7 @@ docker run -d \
 ```
 
 ### Option 2: Kubernetes Deployment
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -67,6 +71,7 @@ spec:
 ### Option 3: Cloud Deployment
 
 #### AWS EC2 Setup
+
 ```bash
 # Launch optimized instance
 aws ec2 run-instances \
@@ -77,6 +82,7 @@ aws ec2 run-instances \
 ```
 
 #### Google Cloud Platform
+
 ```bash
 # Create compute instance
 gcloud compute instances create instrumenttimbre-prod \
@@ -88,6 +94,7 @@ gcloud compute instances create instrumenttimbre-prod \
 ## 🔧 Configuration for Production
 
 ### Environment Variables
+
 ```bash
 export INSTRUMENTTIMBRE_ENV=production
 export INSTRUMENTTIMBRE_LOG_LEVEL=WARNING
@@ -97,6 +104,7 @@ export INSTRUMENTTIMBRE_BATCH_SIZE=64
 ```
 
 ### Production Configuration File
+
 ```yaml
 # config/production.yaml
 environment: production
@@ -126,6 +134,7 @@ monitoring:
 ## 📊 Monitoring & Observability
 
 ### Health Check Endpoint
+
 ```python
 # Health check implementation
 @app.route('/health')
@@ -140,6 +149,7 @@ def health_check():
 ```
 
 ### Prometheus Metrics
+
 ```python
 # Key metrics to monitor
 PREDICTION_COUNTER = Counter('predictions_total', 'Total predictions made')
@@ -149,6 +159,7 @@ ACTIVE_REQUESTS = Gauge('active_requests', 'Currently active requests')
 ```
 
 ### Grafana Dashboard Config
+
 ```json
 {
   "dashboard": {
@@ -174,6 +185,7 @@ ACTIVE_REQUESTS = Gauge('active_requests', 'Currently active requests')
 ## 🛡️ Security Considerations
 
 ### API Security
+
 ```python
 # Rate limiting
 from flask_limiter import Limiter
@@ -187,15 +199,16 @@ limiter = Limiter(
 def validate_audio_file(file):
     allowed_extensions = {'.wav', '.mp3', '.flac'}
     max_size = 100 * 1024 * 1024  # 100MB
-    
+  
     if not file.filename.lower().endswith(tuple(allowed_extensions)):
         raise ValueError("Unsupported file format")
-    
+  
     if len(file.read()) > max_size:
         raise ValueError("File too large")
 ```
 
 ### Network Security
+
 ```bash
 # Firewall configuration
 ufw allow 22/tcp      # SSH
@@ -207,6 +220,7 @@ ufw deny 9090/tcp     # Prometheus (internal only)
 ## 🔄 CI/CD Pipeline
 
 ### GitHub Actions Workflow
+
 ```yaml
 name: Production Deployment
 on:
@@ -218,17 +232,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    
+  
     - name: Run Tests
       run: |
         python -m pytest tests/
         python scripts/test_architecture.py
-    
+  
     - name: Build Docker Image
       run: |
         docker build -t instrumenttimbre:${{ github.ref_name }} .
         docker tag instrumenttimbre:${{ github.ref_name }} instrumenttimbre:latest
-    
+  
     - name: Deploy to Production
       run: |
         docker push instrumenttimbre:${{ github.ref_name }}
@@ -238,6 +252,7 @@ jobs:
 ## 📈 Performance Optimization
 
 ### Model Optimization
+
 ```python
 # Model quantization for faster inference
 import torch
@@ -249,6 +264,7 @@ torch.save(quantized_model, 'model_quantized.pth')
 ```
 
 ### Caching Strategy
+
 ```python
 import redis
 import pickle
@@ -257,11 +273,11 @@ class PredictionCache:
     def __init__(self):
         self.redis_client = redis.Redis(host='localhost', port=6379)
         self.ttl = 3600  # 1 hour
-    
+  
     def get_prediction(self, audio_hash):
         cached = self.redis_client.get(f"pred:{audio_hash}")
         return pickle.loads(cached) if cached else None
-    
+  
     def cache_prediction(self, audio_hash, prediction):
         self.redis_client.setex(
             f"pred:{audio_hash}", 
@@ -271,6 +287,7 @@ class PredictionCache:
 ```
 
 ### Load Balancing
+
 ```nginx
 # nginx.conf
 upstream instrumenttimbre {
@@ -292,25 +309,27 @@ server {
 ## 🎯 Quality Assurance
 
 ### Automated Testing
+
 ```python
 def test_production_accuracy():
     """Test model accuracy on validation set"""
     predictor = InstrumentPredictor('production_model.pth')
-    
+  
     correct = 0
     total = 0
-    
+  
     for audio_file, true_label in validation_set:
         prediction = predictor.predict_file(audio_file)
         if prediction['top_prediction']['class'] == true_label:
             correct += 1
         total += 1
-    
+  
     accuracy = correct / total
     assert accuracy > 0.95, f"Production accuracy {accuracy} below threshold"
 ```
 
 ### Performance Testing
+
 ```bash
 # Load testing with Apache Bench
 ab -n 1000 -c 10 -T 'audio/wav' -p test_audio.wav http://localhost:8080/predict
@@ -324,6 +343,7 @@ ab -n 1000 -c 10 -T 'audio/wav' -p test_audio.wav http://localhost:8080/predict
 ## 🚨 Incident Response
 
 ### Alert Configuration
+
 ```yaml
 # alertmanager.yml
 alerts:
@@ -339,6 +359,7 @@ alerts:
 ```
 
 ### Rollback Procedure
+
 ```bash
 # Quick rollback script
 #!/bin/bash
@@ -350,12 +371,14 @@ kubectl rollout status deployment/instrumenttimbre
 ## 📋 Maintenance Procedures
 
 ### Regular Tasks
+
 - **Daily**: Check logs for errors, monitor performance metrics
 - **Weekly**: Update dependencies, run accuracy validation
 - **Monthly**: Model retraining with new data, performance optimization
 - **Quarterly**: Security audit, disaster recovery testing
 
 ### Backup Strategy
+
 ```bash
 # Automated backup script
 #!/bin/bash
@@ -367,6 +390,7 @@ aws s3 cp "backup_$DATE.tar.gz" s3://instrumenttimbre-backups/
 ## 🎉 Success Metrics
 
 ### KPIs to Track
+
 - **Accuracy**: >95% on production data
 - **Latency**: 95th percentile < 5 seconds
 - **Availability**: >99.9% uptime
@@ -374,6 +398,7 @@ aws s3 cp "backup_$DATE.tar.gz" s3://instrumenttimbre-backups/
 - **User Satisfaction**: >4.5/5 rating
 
 ### Production Readiness Verification
+
 - [ ] Load testing passed (1000+ concurrent users)
 - [ ] Monitoring and alerting configured
 - [ ] Security audit completed

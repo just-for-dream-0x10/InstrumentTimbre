@@ -1,0 +1,279 @@
+# Unified Configuration for InstrumentTimbre Analysis + Generation
+# Extends default_config.yaml with new capabilities while maintaining compatibility
+
+# Inherit from default configuration
+extends: default_config.yaml
+
+# Model architecture configuration
+model:
+  type: unified  # Options: enhanced_cnn, transformer, unified, compatibility_wrapper
+  
+  # Compatibility settings
+  legacy_mode: false      # Set to true for 100% backward compatibility
+  auto_upgrade: true      # Automatically upgrade legacy models
+  
+  # Core model parameters (compatible with existing)
+  input_dim: 128         # Same as existing
+  num_classes: 5         # Chinese instruments: erhu, pipa, guzheng, dizi, guqin
+  dropout_rate: 0.1
+  
+  # Unified model specific parameters
+  d_model: 1024          # Unified representation dimension
+  nhead: 16              # Number of attention heads
+  num_layers: 24         # Transformer layers (can start smaller: 12)
+  dim_feedforward: 4096  # FFN dimension
+  
+  # Task enablement
+  enable_analysis: true     # Always enabled for compatibility
+  enable_generation: false  # Enable for generation features
+  enable_control: false     # Enable for style transfer features
+  
+  # Additional emotion/style classes
+  num_emotion_classes: 6    # joy, sadness, anger, fear, surprise, peaceful
+  num_style_classes: 10     # chinese_traditional, western_classical, folk, etc.
+
+# Enhanced feature extraction
+features:
+  # Maintain existing parameters for compatibility
+  sample_rate: 22050
+  hop_length: 512
+  n_fft: 2048
+  n_mfcc: 50
+  
+  # Unified feature extractor settings
+  feature_extractor: unified  # Options: chinese, unified
+  enable_generation_features: false  # Set to true when generation is needed
+  min_segment_length: 8.0    # Minimum audio length in seconds
+  segment_analysis: true     # Enable multi-segment analysis for long files
+  
+  # Segment processing
+  segment_length: 15.0       # Default segment length for analysis
+  segment_overlap: 5.0       # Overlap between segments
+  
+  # Existing instrument ranges (maintained for compatibility)
+  instrument_ranges:
+    erhu:
+      f_min: 196
+      f_max: 1568
+    pipa:
+      f_min: 220
+      f_max: 2093
+    guzheng:
+      f_min: 196
+      f_max: 2093
+    dizi:
+      f_min: 587
+      f_max: 2349
+    guqin:
+      f_min: 82
+      f_max: 698
+
+# Training configuration for unified model
+training:
+  # Phased training strategy
+  training_phases:
+    phase1_compatibility:
+      epochs: 10
+      description: "Verify existing functionality"
+      frozen_components: []
+      trainable_components: ["all"]
+      learning_rate: 0.0005
+      
+    phase2_generation:
+      epochs: 20
+      description: "Train generation capabilities"
+      frozen_components: ["unified_transformer", "input_projection"]
+      trainable_components: ["task_heads.generation"]
+      learning_rate: 0.001
+      
+    phase3_joint:
+      epochs: 20
+      description: "Joint optimization of all components"
+      frozen_components: []
+      trainable_components: ["all"]
+      learning_rate: 0.0002
+  
+  # Standard training parameters (compatible with existing)
+  epochs: 50              # Total epochs (will be overridden by phases)
+  batch_size: 16          # Smaller batch for larger model
+  
+  # Optimizer settings
+  optimizer:
+    name: adamw
+    lr: 0.001
+    weight_decay: 0.01
+    betas: [0.9, 0.999]
+    eps: 1e-8
+  
+  # Learning rate scheduler
+  scheduler:
+    name: warmup_cosine
+    warmup_epochs: 5
+    max_epochs: 50
+  
+  # Loss function
+  loss:
+    name: multi_task       # Options: crossentropy, multi_task
+    task_weights:
+      instrument_classifier: 1.0    # Primary task
+      emotion_classifier: 0.5       # Secondary tasks
+      style_classifier: 0.3
+      intensity_regressor: 0.2
+      generation_tasks: 0.0         # Initially disabled
+      control_tasks: 0.0            # Initially disabled
+  
+  # Training behavior
+  device: auto
+  patience: 20           # More patience for complex model
+  save_frequency: 5      # Save more frequently
+  grad_clip: 1.0
+  
+  # Logging and monitoring
+  use_tensorboard: true
+  log_dir: logs/unified
+  save_dir: checkpoints/unified
+
+# Data configuration
+data:
+  # Maintain compatibility
+  train_split: 0.8
+  val_split: 0.2
+  use_chinese_features: true
+  sample_rate: 22050
+  max_files_per_class: null
+  data_augmentation: false
+  
+  # New data requirements for generation
+  generation_data:
+    enabled: false           # Enable when generation training starts
+    min_samples_per_style: 1000
+    style_categories:
+      - chinese_traditional
+      - chinese_folk
+      - western_classical
+      - modern_pop
+      - jazz
+    
+  # Minimum segment requirements
+  quality_control:
+    min_duration: 3.0        # Absolute minimum
+    recommended_duration: 8.0 # Recommended minimum
+    optimal_duration: 15.0   # Optimal length
+    max_duration: 60.0       # Maximum useful length
+
+# Evaluation configuration
+evaluation:
+  # Standard metrics (maintained)
+  metrics:
+    precision_recall: true
+    confusion_matrix: true
+    average: weighted
+  
+  # Additional metrics for unified model
+  unified_metrics:
+    cross_task_consistency: true    # Check consistency between tasks
+    generation_quality: false      # Enable when generation is active
+    style_transfer_quality: false  # Enable when control is active
+  
+  batch_size: 32
+  
+  # Backward compatibility validation
+  compatibility_tests:
+    enabled: true
+    legacy_model_path: null        # Path to legacy model for comparison
+    tolerance: 0.02                # Acceptable accuracy difference
+    
+# Inference configuration
+inference:
+  batch_size: 4          # Smaller batch for larger model
+  top_k: 3
+  threshold: 0.0
+  device: auto
+  
+  # Task selection for inference
+  default_tasks:
+    - instrument_classifier  # Always enabled
+  
+  optional_tasks:
+    - emotion_classifier
+    - style_classifier
+    - intensity_regressor
+  
+  generation_tasks:        # Only available if generation enabled
+    - melody_generator
+    - harmony_generator
+    - rhythm_generator
+    - orchestration_generator
+  
+  control_tasks:           # Only available if control enabled
+    - style_transfer
+    - tempo_control
+    - key_control
+    - melody_preservation
+
+# Generation-specific configuration (when enabled)
+generation:
+  enabled: false           # Set to true to enable generation features
+  
+  # Melody preservation settings
+  melody_preservation:
+    min_similarity: 0.8    # Minimum melody similarity to preserve
+    max_changes: 0.3       # Maximum allowed changes
+    preserve_structure: true
+    preserve_rhythm: false  # Allow rhythm changes
+    
+  # Style transfer settings
+  style_transfer:
+    available_styles:
+      - chinese_traditional
+      - western_classical
+      - jazz
+      - folk
+      - modern
+    
+    transfer_strength: 0.7  # Default transfer strength
+    preserve_melody: 0.8    # How much to preserve original melody
+    
+  # Orchestration settings
+  orchestration:
+    max_instruments: 5      # Maximum instruments to add
+    balance_voices: true    # Automatically balance instrument volumes
+    available_instruments:
+      chinese: [erhu, pipa, guzheng, dizi, guqin, xiao, yangqin]
+      western: [violin, cello, piano, flute, clarinet, trumpet, harp]
+
+# Advanced configuration
+advanced:
+  # Memory optimization
+  memory:
+    gradient_checkpointing: false  # Enable for very large models
+    mixed_precision: false         # Enable for faster training
+    model_parallelism: false       # Enable for multi-GPU training
+  
+  # Model optimization
+  optimization:
+    compile_model: false           # PyTorch 2.0 compilation
+    use_flash_attention: false     # Faster attention computation
+    
+  # Debugging and development
+  debug:
+    profile_training: false        # Profile training performance
+    validate_gradients: false     # Check for gradient issues
+    log_memory_usage: false       # Monitor memory consumption
+
+# Migration and compatibility
+migration:
+  # Legacy model migration
+  legacy_migration:
+    enabled: true
+    automatic: true               # Automatically migrate when loading legacy models
+    weight_mapping:
+      transformer: unified_transformer
+      classifier: task_heads.instrument_classifier
+      input_projection: input_projection
+  
+  # Version compatibility
+  version_compatibility:
+    min_supported_version: "1.0.0"
+    current_version: "2.0.0"
+    auto_upgrade_minor: true
