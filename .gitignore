@@ -17,3 +17,4 @@ saved_models/
 
 output/
 
+!InstrumentTimbre/core/data/

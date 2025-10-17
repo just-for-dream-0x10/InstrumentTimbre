@@ -1,0 +1,127 @@
+# Default configuration for InstrumentTimbre
+# This file defines the default settings for training, evaluation, and inference
+
+# Data configuration
+data:
+  train_split: 0.8
+  val_split: 0.2
+  use_chinese_features: true
+  sample_rate: 22050
+  max_files_per_class: null  # null for no limit
+  data_augmentation: false
+
+# Feature extraction configuration
+features:
+  sample_rate: 22050
+  hop_length: 512
+  n_fft: 2048
+  n_mfcc: 50
+  
+  # Chinese instrument specific settings
+  instrument_ranges:
+    erhu:
+      f_min: 196
+      f_max: 1568
+    pipa:
+      f_min: 220
+      f_max: 2093
+    guzheng:
+      f_min: 196
+      f_max: 2093
+    dizi:
+      f_min: 587
+      f_max: 2349
+    guqin:
+      f_min: 82
+      f_max: 698
+
+# Model architecture configuration
+model:
+  type: enhanced_cnn  # cnn, enhanced_cnn, transformer
+  input_dim: 128
+  hidden_dims: [256, 512, 256, 128]
+  kernel_sizes: [3, 3, 3, 3]
+  pool_sizes: [2, 2, 2, 2]
+  fc_dims: [512, 256]
+  num_classes: 5  # Will be auto-detected from data
+  dropout_rate: 0.1
+  use_batch_norm: true
+  use_residual: true
+  use_attention: true
+  use_global_pooling: true
+
+# Training configuration
+training:
+  epochs: 100
+  batch_size: 32
+  
+  # Optimizer settings
+  optimizer:
+    name: adamw
+    lr: 0.001
+    weight_decay: 0.01
+    betas: [0.9, 0.999]
+    eps: 1e-8
+  
+  # Learning rate scheduler
+  scheduler:
+    name: warmup_cosine
+    warmup_epochs: 10
+    max_epochs: 100
+  
+  # Loss function
+  loss:
+    name: crossentropy
+  
+  # Training behavior
+  device: auto  # auto, cpu, cuda
+  patience: 15  # Early stopping patience
+  save_frequency: 10  # Save checkpoint every N epochs
+  grad_clip: 1.0  # Gradient clipping threshold
+  
+  # Logging and monitoring
+  use_tensorboard: true
+  log_dir: logs
+  save_dir: checkpoints
+
+# Evaluation configuration
+evaluation:
+  metrics:
+    precision_recall: true
+    confusion_matrix: true
+    average: weighted  # micro, macro, weighted
+  batch_size: 64
+
+# Inference configuration
+inference:
+  batch_size: 8
+  top_k: 3
+  threshold: 0.0
+  device: auto
+
+# Visualization configuration
+visualization:
+  figure_size: [12, 8]
+  dpi: 100
+  save_format: png
+  style: default
+
+# Preprocessing configuration
+preprocessing:
+  normalize: true
+  convert_to_mono: true
+  enhance_fundamentals: true
+  filter_noise: true
+  fundamental_range: [80, 2000]
+
+# Chinese music theory configuration
+chinese_music:
+  pentatonic_scales:
+    - [0, 2, 4, 7, 9]  # Major pentatonic
+    - [0, 3, 5, 7, 10] # Minor pentatonic
+  traditional_intervals:
+    - 1.0    # Unison
+    - 1.125  # Major second
+    - 1.25   # Major third
+    - 1.5    # Perfect fifth
+    - 1.875  # Major seventh
