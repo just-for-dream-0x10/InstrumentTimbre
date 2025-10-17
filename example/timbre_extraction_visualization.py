@@ -11,6 +11,10 @@ import numpy as np
 import librosa
 import librosa.display
 import matplotlib.pyplot as plt
+
+# Fix font issues for better compatibility
+plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['axes.unicode_minus'] = False
 from pathlib import Path
 import argparse
 import torch

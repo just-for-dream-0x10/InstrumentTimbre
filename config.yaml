@@ -1,0 +1,43 @@
+# InstrumentTimbre Configuration
+# Simplified configuration for Chinese instrument classification
+
+# Data settings
+data:
+  train_split: 0.8
+  use_chinese_features: true
+  sample_rate: 22050
+
+# Feature extraction (optimized for speed)
+features:
+  sample_rate: 22050
+  hop_length: 1024  # Larger hop for faster processing
+  n_fft: 1024       # Smaller FFT for speed
+  n_mfcc: 13        # Standard MFCC count
+
+# Model configuration (auto-detect input dimension)
+model:
+  type: enhanced_cnn
+  input_dim: auto    # Will be auto-detected from features
+  hidden_dims: [64, 128, 64]  # Lightweight model
+  fc_dims: [128, 64] # Smaller fully connected layers
+  num_classes: auto  # Will be auto-detected from data
+  dropout_rate: 0.1
+  use_batch_norm: true
+  use_residual: false  # Disable for speed
+  use_attention: false # Disable for speed
+
+# Training settings
+training:
+  epochs: 100
+  batch_size: 4  # Smaller batch size for small datasets
+  optimizer:
+    name: adamw
+    lr: 0.001
+    weight_decay: 0.01
+  scheduler:
+    name: warmup_cosine
+    warmup_epochs: 10
+    max_epochs: 100
+  patience: 15
+  device: auto
+  use_tensorboard: false  # Disabled to avoid dependency issues

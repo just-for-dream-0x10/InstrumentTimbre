@@ -26,16 +26,18 @@ INSTRUMENT_MAP = {
 
 import pickle
 
+
 def load_timbre_features_any(filepath):
-    if filepath.endswith('.json'):
+    if filepath.endswith(".json"):
         return load_timbre_features(filepath)
-    elif filepath.endswith('.pkl'):
-        with open(filepath, 'rb') as f:
+    elif filepath.endswith(".pkl"):
+        with open(filepath, "rb") as f:
             features = pickle.load(f)
         print(f"Successfully loaded timbre features from: {filepath}")
         return features
     else:
         raise ValueError("Unsupported feature file type")
+
 
 def load_timbre_features(filepath):
     """Loads timbre features from a JSON file."""
@@ -125,11 +127,15 @@ def change_midi_instrument(
         timbre_features = load_timbre_features_any(timbre_features_path)
         if timbre_features:
             feature_stats = calculate_feature_stats(timbre_features)
-            erhu_cc11_value = int(min(127, max(0, feature_stats.get('brightness_proxy', 64))))
-            erhu_velocity_scale = float(feature_stats.get('energy_mean', 1.0))
+            erhu_cc11_value = int(
+                min(127, max(0, feature_stats.get("brightness_proxy", 64)))
+            )
+            erhu_velocity_scale = float(feature_stats.get("energy_mean", 1.0))
             apply_erhu_features = True
             print(f"Feature stats for Erhu: {feature_stats}")
-            print(f"Erhu timbre mapped: CC11={erhu_cc11_value}, velocity_scale={erhu_velocity_scale}")
+            print(
+                f"Erhu timbre mapped: CC11={erhu_cc11_value}, velocity_scale={erhu_velocity_scale}"
+            )
 
     try:
         mid = mido.MidiFile(input_midi_path)
@@ -155,34 +161,84 @@ def change_midi_instrument(
                 # Erhu branch: insert expression, modulation, pitch bend, and velocity enhancement
                 if target_instrument_name == "erhu" and apply_erhu_features:
                     import math
+
                     if msg.type == "program_change":
                         msg = msg.copy(program=40)  # Violin
                     if msg.type == "note_on" and msg.velocity > 0:
                         # Expression (CC11)
-                        new_track.append(mido.Message('control_change', control=11, value=erhu_cc11_value, time=0, channel=msg.channel))
+                        new_track.append(
+                            mido.Message(
+                                "control_change",
+                                control=11,
+                                value=erhu_cc11_value,
+                                time=0,
+                                channel=msg.channel,
+                            )
+                        )
                         # Vibrato/tremolo parameters
                         vib_cycles = 3
-                        vib_depth = int(10 + 10 * feature_stats.get('mfcc_avg', 1))  
-                        bend_depth = int(200 + 20 * feature_stats.get('mfcc_std', 1))
+                        vib_depth = int(10 + 10 * feature_stats.get("mfcc_avg", 1))
+                        bend_depth = int(200 + 20 * feature_stats.get("mfcc_std", 1))
                         # Glide (slide) start
-                        new_track.append(mido.Message('pitchwheel', pitch=-bend_depth, time=0, channel=msg.channel))
+                        new_track.append(
+                            mido.Message(
+                                "pitchwheel",
+                                pitch=-bend_depth,
+                                time=0,
+                                channel=msg.channel,
+                            )
+                        )
                         # Vibrato CC1 (modulation) periodic changes
                         for vib_step in range(vib_cycles):
-                            vib_val = int(64 + vib_depth * math.sin(2 * math.pi * vib_step / vib_cycles))
-                            new_track.append(mido.Message('control_change', control=1, value=vib_val, time=0, channel=msg.channel))
+                            vib_val = int(
+                                64
+                                + vib_depth
+                                * math.sin(2 * math.pi * vib_step / vib_cycles)
+                            )
+                            new_track.append(
+                                mido.Message(
+                                    "control_change",
+                                    control=1,
+                                    value=vib_val,
+                                    time=0,
+                                    channel=msg.channel,
+                                )
+                            )
                         # Slide process and tremolo (pitch bend periodic changes)
                         for bend_step in range(vib_cycles):
-                            bend_val = int(bend_depth * math.sin(2 * math.pi * bend_step / vib_cycles))
-                            new_track.append(mido.Message('pitchwheel', pitch=bend_val, time=5, channel=msg.channel))
+                            bend_val = int(
+                                bend_depth
+                                * math.sin(2 * math.pi * bend_step / vib_cycles)
+                            )
+                            new_track.append(
+                                mido.Message(
+                                    "pitchwheel",
+                                    pitch=bend_val,
+                                    time=5,
+                                    channel=msg.channel,
+                                )
+                            )
                         # Reset pitch bend after slide
-                        new_track.append(mido.Message('pitchwheel', pitch=0, time=0, channel=msg.channel))
+                        new_track.append(
+                            mido.Message(
+                                "pitchwheel", pitch=0, time=0, channel=msg.channel
+                            )
+                        )
                         # Velocity scaled by energy
-                        new_msg = msg.copy(velocity=int(min(127, max(1, int(msg.velocity * erhu_velocity_scale)))))
+                        new_msg = msg.copy(
+                            velocity=int(
+                                min(
+                                    127, max(1, int(msg.velocity * erhu_velocity_scale))
+                                )
+                            )
+                        )
                         new_track.append(new_msg)
                         continue
                 elif target_instrument_name == "piano":
                     if msg.type == "program_change":
-                        print(f"  - Removing Program Change at time {msg.time} for piano safety")
+                        print(
+                            f"  - Removing Program Change at time {msg.time} for piano safety"
+                        )
                         continue
                 else:
                     # 其他乐器正常替换
@@ -195,7 +251,11 @@ def change_midi_instrument(
                         msg = msg.copy(program=target_program)
                 new_track.append(msg)
             # 钢琴分支：不插入program_change
-            if target_instrument_name != "piano" and not has_program_change and first_non_meta_idx is not None:
+            if (
+                target_instrument_name != "piano"
+                and not has_program_change
+                and first_non_meta_idx is not None
+            ):
                 msg0 = new_track[first_non_meta_idx]
                 pc_msg = mido.Message(
                     "program_change",
