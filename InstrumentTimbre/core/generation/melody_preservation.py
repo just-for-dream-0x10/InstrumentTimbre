@@ -615,11 +615,15 @@ class MelodyPreservationEngine:
         """Compute rhythmic similarity"""
         
         # Compare tempo
-        tempo_sim = 1.0 - abs(rhythm1['tempo'] - rhythm2['tempo']) / max(rhythm1['tempo'], rhythm2['tempo'])
+        tempo1 = rhythm1.get('tempo', 120)
+        tempo2 = rhythm2.get('tempo', 120)
+        tempo_sim = 1.0 - abs(tempo1 - tempo2) / max(tempo1, tempo2)
         tempo_sim = max(0, tempo_sim)
         
         # Compare note density
-        density_sim = 1.0 - abs(rhythm1['note_density'] - rhythm2['note_density']) / max(rhythm1['note_density'], rhythm2['note_density'])
+        density1 = rhythm1.get('note_density', 1.0)
+        density2 = rhythm2.get('note_density', 1.0)
+        density_sim = 1.0 - abs(density1 - density2) / max(density1, density2)
         density_sim = max(0, density_sim)
         
         # Compare rhythm patterns (simplified)
@@ -628,7 +632,13 @@ class MelodyPreservationEngine:
         # Weighted combination
         rhythm_similarity = 0.5 * tempo_sim + 0.3 * density_sim + 0.2 * pattern_sim
         
-        return rhythm_similarity
+        # Ensure scalar output
+        if hasattr(rhythm_similarity, 'item'):
+            rhythm_similarity = rhythm_similarity.item()
+        elif isinstance(rhythm_similarity, np.ndarray):
+            rhythm_similarity = float(rhythm_similarity)
+        
+        return float(rhythm_similarity)
     
     def _compute_phrase_similarity(self, phrases1: List[float], phrases2: List[float]) -> float:
         """Compute phrase structure similarity"""
