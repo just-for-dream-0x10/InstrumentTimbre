@@ -299,42 +299,42 @@ class EmotionAnalysisEngine:
         primary_emotion = max(emotion_scores, key=emotion_scores.get)
         
         # Emotion-specific constraints
-        if primary_emotion == EmotionType.HAPPY.value:
+        if primary_emotion == "happy":
             constraints.extend([
                 "prefer_bright_instruments",
                 "maintain_upbeat_tempo",
                 "add_rhythmic_drive",
                 "use_major_harmonies"
             ])
-        elif primary_emotion == EmotionType.SAD.value:
+        elif primary_emotion == "sad":
             constraints.extend([
                 "prefer_warm_instruments",
                 "allow_slower_tempo",
                 "add_expressive_dynamics",
                 "use_minor_harmonies"
             ])
-        elif primary_emotion == EmotionType.CALM.value:
+        elif primary_emotion == "calm":
             constraints.extend([
                 "prefer_soft_instruments",
                 "maintain_steady_tempo",
                 "add_gentle_dynamics",
                 "use_consonant_harmonies"
             ])
-        elif primary_emotion == EmotionType.EXCITED.value:
+        elif primary_emotion == "excited":
             constraints.extend([
                 "prefer_energetic_instruments",
                 "allow_faster_tempo",
                 "add_strong_accents",
                 "use_driving_rhythms"
             ])
-        elif primary_emotion == EmotionType.MELANCHOLY.value:
+        elif primary_emotion == "melancholy":
             constraints.extend([
                 "prefer_expressive_instruments",
                 "allow_rubato_tempo",
                 "add_subtle_dynamics",
                 "use_complex_harmonies"
             ])
-        elif primary_emotion == EmotionType.ANGRY.value:
+        elif primary_emotion == "angry":
             constraints.extend([
                 "prefer_aggressive_instruments",
                 "maintain_strong_tempo",

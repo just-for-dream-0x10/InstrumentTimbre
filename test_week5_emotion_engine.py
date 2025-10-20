@@ -296,27 +296,34 @@ def test_constraint_generation():
         for emotion_type, constraints in constraint_tests.items():
             assert len(constraints) > 3, f"Should have multiple constraints for {emotion_type}"
             
-            # Check for emotion-specific constraints  
+            # Since model is not trained, check what emotion was actually detected
+            test_audio = create_emotion_test_audio(emotion_type, duration=4.0)
+            result = engine.analyze_emotion(test_audio)
+            detected_emotion = result.primary_emotion.value
+            
+            logger.info("  Intended: %s, Detected: %s", emotion_type, detected_emotion)
+            
+            # Check constraints match the actually detected emotion, not the intended emotion
             constraint_text = " ".join(constraints)
             
-            if emotion_type == 'happy':
-                # Since model isn't trained, it might misclassify - check actual detected emotion
-                detected_emotion = None
-                for emotion, result in [(emotion_type, engine.analyze_emotion(create_emotion_test_audio(emotion_type, duration=4.0)))]:
-                    detected_emotion = result.primary_emotion.value
-                    break
-                
-                # Check constraints match detected emotion rather than intended emotion
-                logger.info("  Intended: %s, Detected: %s", emotion_type, detected_emotion)
-            elif emotion_type == 'sad':
+            if detected_emotion == 'happy':
+                assert any('bright' in c or 'upbeat' in c or 'major' in c for c in constraints), \
+                       f"Happy emotion should have bright/upbeat/major constraints"
+            elif detected_emotion == 'sad':
                 assert any('warm' in c or 'minor' in c or 'expressive' in c for c in constraints), \
-                       "Sad emotion should have warm/minor/expressive constraints"
-            elif emotion_type == 'angry':
+                       f"Sad emotion should have warm/minor/expressive constraints"
+            elif detected_emotion == 'angry':
                 assert any('aggressive' in c or 'strong' in c or 'sharp' in c for c in constraints), \
-                       "Angry emotion should have aggressive/strong/sharp constraints"
-            elif emotion_type == 'calm':
+                       f"Angry emotion should have aggressive/strong/sharp constraints"
+            elif detected_emotion == 'calm':
                 assert any('soft' in c or 'gentle' in c or 'steady' in c for c in constraints), \
-                       "Calm emotion should have soft/gentle/steady constraints"
+                       f"Calm emotion should have soft/gentle/steady constraints"
+            elif detected_emotion == 'excited':
+                assert any('energetic' in c or 'faster' in c or 'driving' in c for c in constraints), \
+                       f"Excited emotion should have energetic/faster/driving constraints"
+            elif detected_emotion == 'melancholy':
+                assert any('expressive' in c or 'rubato' in c or 'complex' in c for c in constraints), \
+                       f"Melancholy emotion should have expressive/rubato/complex constraints"
         
         logger.info("✅ Constraint generation test PASSED")
         return True, constraint_tests
