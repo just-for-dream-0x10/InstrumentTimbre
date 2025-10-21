@@ -19,8 +19,8 @@ class ChineseInstrumentFeatures:
     Extended features specifically for Chinese traditional instruments.
     
     Captures traditional musical elements like:
-    - Sliding techniques (滑音)
-    - Vibrato patterns (颤音) 
+    - Sliding techniques (PLACEHOLDER)
+    - Vibrato patterns (PLACEHOLDER) 
     - Tonal characteristics
     - Harmonic structures unique to Chinese music
     """
@@ -58,11 +58,11 @@ class ChineseInstrumentAnalyzer:
         # Chinese music theory constants
         self.pentatonic_intervals = [0, 2, 4, 7, 9]  # Major pentatonic
         self.traditional_scales = {
-            'gong': [0, 2, 4, 7, 9],      # 宫调
-            'shang': [0, 2, 5, 7, 10],    # 商调
-            'jue': [0, 3, 5, 8, 10],      # 角调
-            'zhi': [0, 2, 5, 7, 9],       # 徵调
-            'yu': [0, 3, 5, 8, 10]        # 羽调
+            'gong': [0, 2, 4, 7, 9],
+            'shang': [0, 2, 5, 7, 10],
+            'jue': [0, 3, 5, 8, 10],
+            'zhi': [0, 2, 5, 7, 9],
+            'yu': [0, 3, 5, 8, 10]
         }
         
         # Instrument-specific parameters
@@ -157,7 +157,7 @@ class ChineseInstrumentAnalyzer:
     
     def _detect_sliding_techniques(self, f0: np.ndarray, sample_rate: int) -> np.ndarray:
         """
-        Detect sliding techniques (滑音) common in Chinese instruments.
+        Detect sliding techniques (PLACEHOLDER) common in Chinese instruments.
         
         Args:
             f0: Fundamental frequency contour

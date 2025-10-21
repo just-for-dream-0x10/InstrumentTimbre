@@ -1,5 +1,5 @@
 """
-Generation Quality Evaluator - Week 5 Development Task
+Generation Quality Evaluator - System Development Task
 
 This module implements comprehensive quality assessment for generated music,
 evaluating preservation, musical coherence, style consistency, and overall quality.

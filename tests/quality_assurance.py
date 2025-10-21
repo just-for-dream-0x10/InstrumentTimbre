@@ -1,5 +1,5 @@
 """
-Week 8 Quality Assurance System Tests
+System Quality Assurance System Tests
 
 Comprehensive test suite for the Quality Assurance system components
 including validators, auto-coordination, user feedback, and quality scoring.

@@ -2,7 +2,7 @@
 核心模块包
 Core Modules Package
 
-Week 5-6 核心模块：
+System-6 核心模块：
 - 情感分析引擎 (emotion_engine.py)
 - 音乐结构分析器 (music_analyzer.py)  
 - 智能音轨操作器 (track_operator.py)

@@ -1,5 +1,5 @@
 """
-Style Transformation Engine - Week 4 Development Task
+Style Transformation Engine - System Development Task
 
 This module implements style transformation algorithms that convert melodies
 between different musical styles while preserving core melodic identity.

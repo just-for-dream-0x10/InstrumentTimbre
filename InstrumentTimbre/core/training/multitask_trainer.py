@@ -1,5 +1,5 @@
 """
-Multi-task Joint Training System - Week 5 Development Task
+Multi-task Joint Training System - System Development Task
 
 This module implements joint training for the unified model that combines
 emotion analysis, instrument recognition, and music generation tasks.

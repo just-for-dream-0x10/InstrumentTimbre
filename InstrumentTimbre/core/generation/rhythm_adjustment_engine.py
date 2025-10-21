@@ -1,5 +1,5 @@
 """
-Rhythm Adjustment Engine - Week 4 Development Task
+Rhythm Adjustment Engine - System Development Task
 
 This module implements intelligent rhythm adjustment algorithms that can
 modify tempo, timing, and rhythmic patterns while preserving melodic

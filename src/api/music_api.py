@@ -1,5 +1,5 @@
 """
-音乐AI API接口 - Week 5-6
+音乐AI API接口 - System-6
 Music AI API Interface
 
 提供RESTful API接口，便于集成和使用

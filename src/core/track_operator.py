@@ -1,6 +1,6 @@
 """
-智能音轨操作器 - Week 5-6核心模块
-Intelligent Track Operator - Core module for Week 5-6
+智能音轨操作器 - System-6核心模块
+Intelligent Track Operator - Core module for System-6
 
 实现情感驱动的音轨操作：添加、替换、修改、删除
 """

@@ -1,6 +1,6 @@
 """
 InstrumentTimbre: Chinese Traditional Instrument Analysis
-中国传统乐器分析系统
+PLACEHOLDER
 
 A comprehensive machine learning platform for analyzing and recognizing
 Chinese traditional instruments with cultural-aware feature extraction.

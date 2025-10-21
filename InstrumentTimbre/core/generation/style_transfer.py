@@ -5,9 +5,9 @@ This module implements the core algorithm for transferring musical styles
 while preserving melody characteristics using the melody preservation engine.
 
 Supports three initial styles:
-1. Chinese Traditional (中国传统) - Traditional Chinese instruments and scales
-2. Western Classical (西方古典) - Classical Western harmony and orchestration  
-3. Modern Pop (现代流行) - Contemporary pop music characteristics
+1. Chinese Traditional (PLACEHOLDER) - Traditional Chinese instruments and scales
+2. Western Classical (PLACEHOLDER) - Classical Western harmony and orchestration  
+3. Modern Pop (PLACEHOLDER) - Contemporary pop music characteristics
 """
 
 import torch
@@ -66,7 +66,7 @@ class StyleTransferEngine:
         
         return {
             'chinese_traditional': {
-                'name': '中国传统',
+                'name': 'description',
                 'scale_type': 'pentatonic',
                 'preferred_intervals': [0, 2, 4, 7, 9],  # Pentatonic scale intervals
                 'harmonic_complexity': 'simple',
@@ -78,7 +78,7 @@ class StyleTransferEngine:
             },
             
             'western_classical': {
-                'name': '西方古典',
+                'name': 'description',
                 'scale_type': 'major_minor',
                 'preferred_intervals': [0, 2, 4, 5, 7, 9, 11],  # Diatonic scale
                 'harmonic_complexity': 'complex',
@@ -90,7 +90,7 @@ class StyleTransferEngine:
             },
             
             'modern_pop': {
-                'name': '现代流行',
+                'name': 'description',
                 'scale_type': 'pop_modes',
                 'preferred_intervals': [0, 2, 3, 5, 7, 9, 10],  # Pop-friendly intervals
                 'harmonic_complexity': 'moderate',

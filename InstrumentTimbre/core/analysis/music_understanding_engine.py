@@ -1,5 +1,5 @@
 """
-Music Understanding Engine - Week 6 Development Task
+Music Understanding Engine - System Development Task
 
 Multi-layer music understanding system for comprehensive music analysis.
 Implements track role identification, structure parsing, harmony analysis, and rhythm recognition.

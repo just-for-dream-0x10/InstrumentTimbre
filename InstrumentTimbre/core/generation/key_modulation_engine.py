@@ -1,5 +1,5 @@
 """
-Key Modulation Engine - Week 4 Development Task
+Key Modulation Engine - System Development Task
 
 This module implements intelligent key modulation algorithms that can
 transpose melodies and apply harmonic transformations while preserving

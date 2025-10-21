@@ -1,5 +1,5 @@
 """
-Music Generation Head - Week 5 Development Task
+Music Generation Head - System Development Task
 
 This module implements the music generation head for the unified model,
 providing direct audio generation capabilities integrated with the

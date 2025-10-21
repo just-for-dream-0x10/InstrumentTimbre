@@ -1,5 +1,5 @@
 """
-智能音乐编辑主控制器 - Week 5-6核心模块
+智能音乐编辑主控制器 - System-6核心模块
 Main Controller for Intelligent Music Editing System
 
 整合所有核心功能，提供统一的接口

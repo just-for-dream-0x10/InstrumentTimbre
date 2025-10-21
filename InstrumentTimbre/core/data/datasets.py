@@ -82,15 +82,15 @@ class AudioDataset(Dataset):
                 filename = file_path.stem.lower()
                 
                 # Try to detect instrument from filename
-                if 'erhu' in filename or '二胡' in filename:
+                if 'erhu' in filename or 'description' in filename:
                     class_name = 'erhu'
-                elif 'pipa' in filename or '琵琶' in filename:
+                elif 'pipa' in filename or 'description' in filename:
                     class_name = 'pipa'
-                elif 'guzheng' in filename or '古筝' in filename:
+                elif 'guzheng' in filename or 'description' in filename:
                     class_name = 'guzheng'
-                elif 'dizi' in filename or '笛子' in filename:
+                elif 'dizi' in filename or 'description' in filename:
                     class_name = 'dizi'
-                elif 'guqin' in filename or '古琴' in filename:
+                elif 'guqin' in filename or 'description' in filename:
                     class_name = 'guqin'
                 elif 'piano' in filename:
                     class_name = 'piano'

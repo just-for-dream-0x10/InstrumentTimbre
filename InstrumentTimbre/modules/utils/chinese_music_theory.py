@@ -13,23 +13,23 @@ from ..core import InstrumentType
 
 
 class ChineseMode(Enum):
-    """Traditional Chinese musical modes (调式)."""
-    GONG = "gong"      # 宫调 - Major-like mode
-    SHANG = "shang"    # 商调 - Dorian-like mode  
-    JUE = "jue"        # 角调 - Phrygian-like mode
-    ZHI = "zhi"        # 徵调 - Mixolydian-like mode
-    YU = "yu"          # 羽调 - Minor-like mode
+    """Traditional Chinese musical modes (PLACEHOLDER)."""
+    GONG = "gong"
+    SHANG = "shang"
+    JUE = "jue"
+    ZHI = "zhi"
+    YU = "yu"
 
 
 class PlayingTechnique(Enum):
     """Traditional Chinese playing techniques."""
-    HUA_YIN = "hua_yin"           # 滑音 - Sliding notes
-    CHAN_YIN = "chan_yin"         # 颤音 - Vibrato
-    DUN_YIN = "dun_yin"           # 顿音 - Staccato
-    LIAN_YIN = "lian_yin"         # 连音 - Legato
-    ZHUANG_YIN = "zhuang_yin"     # 装音 - Grace notes
-    LUN_ZHI = "lun_zhi"           # 轮指 - Tremolo (pipa)
-    GUA_ZOU = "gua_zou"           # 刮奏 - Glissando (guzheng)
+    HUA_YIN = "hua_yin"
+    CHAN_YIN = "chan_yin"
+    DUN_YIN = "dun_yin"
+    LIAN_YIN = "lian_yin"
+    ZHUANG_YIN = "zhuang_yin"
+    LUN_ZHI = "lun_zhi"
+    GUA_ZOU = "gua_zou"
 
 
 class ChineseMusicTheory:
@@ -43,24 +43,22 @@ class ChineseMusicTheory:
     def __init__(self):
         """Initialize Chinese music theory knowledge."""
         
-        # Traditional five-note scale (五声音阶)
         self.wu_sheng_scale = {
-            'gong': 0,    # 宫 - Tonic
-            'shang': 2,   # 商 - Supertonic  
-            'jue': 4,     # 角 - Mediant
-            'zhi': 7,     # 徵 - Dominant
-            'yu': 9       # 羽 - Submediant
+            'gong': 0,
+            'shang': 2,
+            'jue': 4,
+            'zhi': 7,
+            'yu': 9
         }
         
-        # Seven-note scale with additional notes (七声音阶)
         self.qi_sheng_scale = {
-            'gong': 0,     # 宫
-            'shang': 2,    # 商
-            'jue': 4,      # 角
-            'bian_zhi': 6, # 变徵 - Augmented fourth
-            'zhi': 7,      # 徵
-            'yu': 9,       # 羽
-            'bian_gong': 11 # 变宫 - Leading tone
+            'gong': 0,
+            'shang': 2,
+            'jue': 4,
+            'bian_zhi': 6,
+            'zhi': 7,
+            'yu': 9,
+            'bian_gong': 11
         }
         
         # Traditional modes and their intervals
@@ -74,7 +72,7 @@ class ChineseMusicTheory:
         
         # Instrument family characteristics
         self.instrument_families = {
-            'silk_bamboo': {  # 丝竹乐器
+            'silk_bamboo': {
                 'instruments': [InstrumentType.ERHU, InstrumentType.DIZI, InstrumentType.XIAO],
                 'characteristics': {
                     'delicate_expression': True,
@@ -82,7 +80,7 @@ class ChineseMusicTheory:
                     'subtle_dynamics': True
                 }
             },
-            'plucked_strings': {  # 弹拨乐器
+            'plucked_strings': {
                 'instruments': [InstrumentType.PIPA, InstrumentType.GUZHENG, InstrumentType.GUQIN],
                 'characteristics': {
                     'attack_emphasis': True,
@@ -90,7 +88,7 @@ class ChineseMusicTheory:
                     'harmonic_richness': True
                 }
             },
-            'wind_instruments': {  # 管乐器
+            'wind_instruments': {
                 'instruments': [InstrumentType.DIZI, InstrumentType.XIAO, InstrumentType.SUONA],
                 'characteristics': {
                     'breath_expression': True,

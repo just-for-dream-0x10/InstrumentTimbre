@@ -1,6 +1,6 @@
 """
-音乐结构分析器 - Week 5核心模块
-Music Structure Analyzer - Core module for Week 5
+音乐结构分析器 - System核心模块
+Music Structure Analyzer - Core module for System
 
 实现多层音乐理解：音轨角色识别、结构解析、和声分析
 """

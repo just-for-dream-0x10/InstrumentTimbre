@@ -1,6 +1,6 @@
 """
-情感分析引擎 - Week 5核心模块
-Emotion Analysis Engine - Core module for Week 5
+情感分析引擎 - System核心模块
+Emotion Analysis Engine - Core module for System
 
 实现6类情感识别与强度量化，为音乐编辑提供情感约束
 """

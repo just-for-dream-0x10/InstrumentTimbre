@@ -2,7 +2,7 @@
 智能音乐编辑与优化AI系统 - 主入口
 Intelligent Music Editing and Optimization AI System - Main Entry
 
-Week 5-6 基础架构实现
+System-6 基础架构实现
 基于情感驱动的音乐编辑和优化AI工具
 """
 

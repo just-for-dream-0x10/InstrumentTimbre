@@ -1,5 +1,5 @@
 """
-Enhanced Melody Similarity Calculator - Week 3 Development Task
+Enhanced Melody Similarity Calculator - System Development Task
 
 This module provides improved similarity calculation methods that better
 distinguish between melodically similar and different music pieces.

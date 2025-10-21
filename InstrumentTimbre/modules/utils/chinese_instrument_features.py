@@ -21,8 +21,8 @@ class ChineseInstrumentFeatures:
     Extended features specifically for Chinese traditional instruments.
     
     Captures traditional musical elements like:
-    - Sliding techniques (滑音)
-    - Vibrato patterns (颤音) 
+    - Sliding techniques (PLACEHOLDER)
+    - Vibrato patterns (PLACEHOLDER) 
     - Tonal characteristics
     - Harmonic structures unique to Chinese music
     """
@@ -45,33 +45,33 @@ class ChineseInstrumentFeatures:
     rhythmic_complexity: Optional[float] = None         # Traditional rhythm patterns
     
     # Enhanced sliding techniques analysis
-    sliding_velocity: Optional[np.ndarray] = None       # 滑音速度分析
-    sliding_curvature: Optional[np.ndarray] = None      # 滑音曲率分析
-    portamento_detection: Optional[Dict[str, float]] = None  # 滑奏检测
+    sliding_velocity: Optional[np.ndarray] = None
+    sliding_curvature: Optional[np.ndarray] = None
+    portamento_detection: Optional[Dict[str, float]] = None
     
     # Enhanced vibrato analysis  
-    vibrato_onset_detection: Optional[np.ndarray] = None     # 颤音起始检测
-    vibrato_depth_variation: Optional[np.ndarray] = None     # 颤音深度变化
-    finger_vibrato_vs_bow: Optional[float] = None            # 指颤vs弓颤区分
+    vibrato_onset_detection: Optional[np.ndarray] = None
+    vibrato_depth_variation: Optional[np.ndarray] = None
+    finger_vibrato_vs_bow: Optional[float] = None
     
     # Traditional ornament detection
-    grace_note_detection: Optional[np.ndarray] = None        # 装饰音检测
-    trill_detection: Optional[Dict[str, float]] = None       # 颤音检测
-    mordent_detection: Optional[np.ndarray] = None           # 波音检测
+    grace_note_detection: Optional[np.ndarray] = None
+    trill_detection: Optional[Dict[str, float]] = None
+    mordent_detection: Optional[np.ndarray] = None
     
     # Advanced breath analysis for wind instruments
-    circular_breathing: Optional[float] = None               # 循环换气检测
-    breath_pressure_variation: Optional[np.ndarray] = None   # 气息压力变化
-    embouchure_stability: Optional[float] = None             # 口型稳定性
+    circular_breathing: Optional[float] = None
+    breath_pressure_variation: Optional[np.ndarray] = None
+    embouchure_stability: Optional[float] = None
     
     # String-specific enhancements
-    string_coupling_resonance: Optional[np.ndarray] = None   # 弦间共振
-    sympathetic_resonance: Optional[float] = None            # 同情共振
+    string_coupling_resonance: Optional[np.ndarray] = None
+    sympathetic_resonance: Optional[float] = None
     
     # Cultural music pattern recognition
-    pentatonic_phrase_detection: Optional[List[Dict]] = None # 五声性乐句检测
-    traditional_cadence_patterns: Optional[List[str]] = None # 传统终止式
-    modal_characteristics: Optional[Dict[str, float]] = None  # 调式特征
+    pentatonic_phrase_detection: Optional[List[Dict]] = None
+    traditional_cadence_patterns: Optional[List[str]] = None
+    modal_characteristics: Optional[Dict[str, float]] = None
 
 
 class ChineseInstrumentAnalyzer:
@@ -89,11 +89,11 @@ class ChineseInstrumentAnalyzer:
         # Chinese music theory constants
         self.pentatonic_intervals = [0, 2, 4, 7, 9]  # Major pentatonic
         self.traditional_scales = {
-            'gong': [0, 2, 4, 7, 9],      # 宫调
-            'shang': [0, 2, 5, 7, 10],    # 商调
-            'jue': [0, 3, 5, 8, 10],      # 角调
-            'zhi': [0, 2, 5, 7, 9],       # 徵调
-            'yu': [0, 3, 5, 8, 10]        # 羽调
+            'gong': [0, 2, 4, 7, 9],
+            'shang': [0, 2, 5, 7, 10],
+            'jue': [0, 3, 5, 8, 10],
+            'zhi': [0, 2, 5, 7, 9],
+            'yu': [0, 3, 5, 8, 10]
         }
         
         # Enhanced detection parameters
@@ -249,7 +249,7 @@ class ChineseInstrumentAnalyzer:
     
     def _detect_sliding_techniques(self, f0: np.ndarray, sample_rate: int) -> np.ndarray:
         """
-        Detect sliding techniques (滑音) common in Chinese instruments.
+        Detect sliding techniques (PLACEHOLDER) common in Chinese instruments.
         
         Args:
             f0: Fundamental frequency contour
@@ -570,7 +570,7 @@ class ChineseInstrumentAnalyzer:
     def _calculate_sliding_velocity(self, f0: np.ndarray, sample_rate: int) -> np.ndarray:
         """
         Calculate sliding velocity in cents per second.
-        计算滑音速度（音分/秒）
+        PLACEHOLDER（PLACEHOLDER/PLACEHOLDER）
         """
         if len(f0) < 3:
             return np.zeros_like(f0)
@@ -594,7 +594,7 @@ class ChineseInstrumentAnalyzer:
     def _analyze_sliding_curvature(self, f0: np.ndarray) -> np.ndarray:
         """
         Analyze sliding curvature (acceleration patterns).
-        分析滑音曲率（加速度模式）
+        PLACEHOLDER（PLACEHOLDER）
         """
         if len(f0) < 5:
             return np.zeros_like(f0)
@@ -622,7 +622,7 @@ class ChineseInstrumentAnalyzer:
     def _detect_portamento(self, f0: np.ndarray, sample_rate: int) -> Dict[str, float]:
         """
         Detect portamento (smooth pitch transitions).
-        检测滑奏（平滑音高过渡）
+        PLACEHOLDER（PLACEHOLDER）
         """
         portamento_analysis = {
             'presence': 0.0,
@@ -664,7 +664,7 @@ class ChineseInstrumentAnalyzer:
     def _detect_vibrato_onsets(self, f0: np.ndarray, sample_rate: int) -> np.ndarray:
         """
         Detect vibrato onset points.
-        检测颤音起始点
+        PLACEHOLDER
         """
         if len(f0) < 50:
             return np.zeros_like(f0)
@@ -702,7 +702,7 @@ class ChineseInstrumentAnalyzer:
     def _analyze_vibrato_depth_changes(self, f0: np.ndarray) -> np.ndarray:
         """
         Analyze changes in vibrato depth over time.
-        分析颤音深度随时间的变化
+        PLACEHOLDER
         """
         if len(f0) < 50:
             return np.zeros_like(f0)

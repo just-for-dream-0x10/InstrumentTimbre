@@ -1,5 +1,5 @@
 """
-Instrumentation Engine - Week 4 Development Task
+Instrumentation Engine - System Development Task
 
 This module implements automatic instrumentation algorithms that intelligently
 assign instruments to melodic lines while preserving musical coherence.

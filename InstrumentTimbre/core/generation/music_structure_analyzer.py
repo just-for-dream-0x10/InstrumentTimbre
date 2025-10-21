@@ -1,5 +1,5 @@
 """
-Music Structure Analyzer - Week 3 Development Task
+Music Structure Analyzer - System Development Task
 
 This module implements advanced music structure analysis to support
 melody preservation by understanding the hierarchical structure of music.

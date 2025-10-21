@@ -1,7 +1,7 @@
 """
-Music Generation Pipeline - Week 5 Development Task
+Music Generation Pipeline - System Development Task
 
-This module integrates all Week 3 and Week 4 components into a unified
+This module integrates all System and System components into a unified
 music generation pipeline that can analyze input audio and generate
 new music with preserved melodic identity and target style.
 """
@@ -77,7 +77,7 @@ class MusicGenerationPipeline:
     """
     Unified music generation pipeline
     
-    Integrates all Week 3 and Week 4 components:
+    Integrates all System and System components:
     - Melody preservation and analysis
     - Style transformation
     - Instrumentation suggestions

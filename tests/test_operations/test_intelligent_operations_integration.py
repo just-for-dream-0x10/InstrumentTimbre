@@ -1,8 +1,9 @@
 """
-Week 7 智能音轨操作引擎集成测试
-"""
+Intelligent Track Operations Engine Integration Tests
 
-import pytest
+Tests the complete functionality of the intelligent track operations system,
+including conflict detection, repair, replacement and generation modules.
+"""
 import numpy as np
 from unittest.mock import Mock, patch
 
@@ -22,8 +23,8 @@ from InstrumentTimbre.core.operations.data_structures import (
 )
 
 
-class TestWeek7Integration:
-    """Week 7 集成测试"""
+class TestIntelligentOperationsIntegration:
+    """Intelligent track operations integration tests"""
     
     def setup_method(self):
         """每个测试方法前的设置"""
@@ -394,8 +395,8 @@ class TestWeek7Integration:
             assert result.generated_track.role == role
 
 
-class TestWeek7Performance:
-    """Week 7 性能测试"""
+class TestIntelligentOperationsPerformance:
+    """Intelligent operations performance tests"""
     
     def test_generation_speed(self):
         """测试生成速度"""

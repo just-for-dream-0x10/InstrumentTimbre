@@ -22,11 +22,11 @@ class MelodyPreservationEngine:
     Core engine for preserving melody characteristics during music generation
     
     This engine extracts and preserves the essential melodic DNA:
-    1. Pitch contour (音高轮廓) - the shape of the melody
-    2. Interval relationships (音程关系) - the gaps between notes  
-    3. Rhythmic skeleton (节奏骨架) - the timing structure
-    4. Phrase boundaries (乐句边界) - the musical sentences
-    5. Characteristic notes (特征音符) - the memorable peaks and valleys
+    1. Pitch contour (PLACEHOLDER) - the shape of the melody
+    2. Interval relationships (PLACEHOLDER) - the gaps between notes  
+    3. Rhythmic skeleton (PLACEHOLDER) - the timing structure
+    4. Phrase boundaries (PLACEHOLDER) - the musical sentences
+    5. Characteristic notes (PLACEHOLDER) - the memorable peaks and valleys
     """
     
     def __init__(self, config: Optional[Dict[str, Any]] = None):

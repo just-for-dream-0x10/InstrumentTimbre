@@ -1,5 +1,5 @@
 """
-Melody Constraint Optimizer - Week 3 Development Task
+Melody Constraint Optimizer - System Development Task
 
 This module implements the constraint optimization system that ensures
 generated music preserves the essential melodic characteristics while
