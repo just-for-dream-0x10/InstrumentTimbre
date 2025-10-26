@@ -152,19 +152,19 @@ def extract_chinese_instrument_features(audio, sr, instrument_category=None):
         y=audio, sr=sr, n_fft=2048, hop_length=512, n_mels=128
     )
 
-    # Extract pitch contour (important for 弓弦类 and 吹管类)
+    # Extract pitch contour (important for  and )
     f0, voiced_flag, voiced_probs = librosa.pyin(
         audio, fmin=librosa.note_to_hz("C2"), fmax=librosa.note_to_hz("C7"), sr=sr
     )
 
-    # Extract onset strengths (important for 弹拨类 and 打击类)
+    # Extract onset strengths (important for  and )
     onset_env = librosa.onset.onset_strength(y=audio, sr=sr)
 
     # Harmonic and percussive components (useful for all categories)
     harmonic, percussive = librosa.effects.hpss(audio)
 
     # Category-specific features
-    if instrument_category == "弓弦类":  # Bowed strings
+    if instrument_category == "":  # Bowed strings
         # Enhanced pitch contour features
         pitch_contour = f0.copy()
         # Fill NaN values with previous values for a smoother contour
@@ -187,7 +187,7 @@ def extract_chinese_instrument_features(audio, sr, instrument_category=None):
             "harmonic_component": librosa.feature.melspectrogram(y=harmonic, sr=sr),
         }
 
-    elif instrument_category == "弹拨类":  # Plucked strings
+    elif instrument_category == "":  # Plucked strings
         # Onset detection is critical
         onset_frames = librosa.onset.onset_detect(onset_envelope=onset_env, sr=sr)
         onset_times = librosa.frames_to_time(onset_frames, sr=sr)
@@ -209,7 +209,7 @@ def extract_chinese_instrument_features(audio, sr, instrument_category=None):
             "percussive_component": librosa.feature.melspectrogram(y=percussive, sr=sr),
         }
 
-    elif instrument_category == "吹管类":  # Wind instruments
+    elif instrument_category == "":  # Wind instruments
         # Breath noise detection
         zero_crossings = librosa.feature.zero_crossing_rate(audio)
 
@@ -228,7 +228,7 @@ def extract_chinese_instrument_features(audio, sr, instrument_category=None):
             "harmonic_component": librosa.feature.melspectrogram(y=harmonics, sr=sr),
         }
 
-    elif instrument_category == "打击类":  # Percussion
+    elif instrument_category == "":  # Percussion
         # Rhythmic features
         tempogram = librosa.feature.tempogram(onset_envelope=onset_env, sr=sr)
 

@@ -1,8 +1,8 @@
 """
-情感分析引擎 - System核心模块
+ - System
 Emotion Analysis Engine - Core module for System
 
-实现6类情感识别与强度量化，为音乐编辑提供情感约束
+6，
 """
 
 import numpy as np
@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 class EmotionType(Enum):
-    """情感类型枚举"""
+    """"""
     HAPPY = "happy"
     SAD = "sad"
     CALM = "calm"
@@ -24,7 +24,7 @@ class EmotionType(Enum):
 
 @dataclass
 class EmotionResult:
-    """情感分析结果"""
+    """Analysis results"""
     primary_emotion: EmotionType
     emotion_scores: Dict[EmotionType, float]
     intensity: float
@@ -33,13 +33,13 @@ class EmotionResult:
 
 class EmotionAnalysisEngine:
     """
-    情感分析引擎
     
-    核心功能：
-    1. 6类情感识别 (快乐、悲伤、平静、激动、忧郁、愤怒)
-    2. 情感强度量化 (0-1连续值)
-    3. 时序情感轨迹追踪
-    4. 情感约束生成
+    
+    ：
+    1. 6 (、、、、、)
+    2.  (0-1)
+    3. 
+    4. 
     """
     
     def __init__(self, model_path: Optional[str] = None):
@@ -48,12 +48,12 @@ class EmotionAnalysisEngine:
         self.feature_extractor = AudioFeatureExtractor()
         
     def _load_model(self, model_path: Optional[str]) -> nn.Module:
-        """加载情感分析模型"""
+        """loadEmotion analysis"""
         if model_path:
-            # 加载预训练模型
+            # load
             model = torch.load(model_path, map_location=self.device)
         else:
-            # 创建默认模型架构
+            # create
             model = EmotionClassifier()
         
         model.to(self.device)
@@ -62,31 +62,31 @@ class EmotionAnalysisEngine:
     
     def analyze(self, audio_data: np.ndarray, sr: int = 22050) -> EmotionResult:
         """
-        分析音频的情感特征
+        
         
         Args:
-            audio_data: 音频数据
-            sr: 采样率
+            audio_data: 
+            sr: 
             
         Returns:
-            EmotionResult: 情感分析结果
+            EmotionResult: 
         """
-        # 1. 音频特征提取
+        # 1. Audio features
         features = self.feature_extractor.extract(audio_data, sr)
         
-        # 2. 情感识别
+        # 2. 
         with torch.no_grad():
             features_tensor = torch.FloatTensor(features).unsqueeze(0).to(self.device)
             emotion_logits = self.model(features_tensor)
             emotion_probs = torch.softmax(emotion_logits, dim=-1)
         
-        # 3. 结果解析
+        # 3. 
         emotion_scores = self._parse_emotion_scores(emotion_probs)
         primary_emotion = max(emotion_scores, key=emotion_scores.get)
         intensity = self._calculate_intensity(emotion_probs)
         confidence = float(torch.max(emotion_probs))
         
-        # 4. 时序轨迹分析
+        # 4. 
         temporal_trajectory = self._analyze_temporal_trajectory(audio_data, sr)
         
         return EmotionResult(
@@ -98,7 +98,7 @@ class EmotionAnalysisEngine:
         )
     
     def _parse_emotion_scores(self, emotion_probs: torch.Tensor) -> Dict[EmotionType, float]:
-        """解析情感得分"""
+        """"""
         emotion_list = list(EmotionType)
         scores = {}
         probs = emotion_probs.cpu().numpy().flatten()
@@ -109,27 +109,27 @@ class EmotionAnalysisEngine:
         return scores
     
     def _calculate_intensity(self, emotion_probs: torch.Tensor) -> float:
-        """计算情感强度"""
-        # 使用熵来计算情感强度
+        """Emotion intensity"""
+        # Emotion intensity
         probs = emotion_probs.cpu().numpy().flatten()
         entropy = -np.sum(probs * np.log(probs + 1e-8))
         max_entropy = np.log(len(probs))
         
-        # 强度 = 1 - 标准化熵 (越集中强度越高)
+        #  = 1 -  ()
         intensity = 1.0 - (entropy / max_entropy)
         return float(intensity)
     
     def _analyze_temporal_trajectory(self, audio_data: np.ndarray, sr: int) -> np.ndarray:
-        """分析时序情感轨迹"""
-        # 将音频分段分析
-        segment_length = sr * 2  # 2秒一段
-        hop_length = sr // 2     # 0.5秒步长
+        """"""
+        # 
+        segment_length = sr * 2  # 2
+        hop_length = sr // 2     # 0.5
         
         trajectory = []
         for start in range(0, len(audio_data) - segment_length, hop_length):
             segment = audio_data[start:start + segment_length]
             
-            # 简化的情感分析 (快速版本)
+            # Emotion analysis ()
             features = self.feature_extractor.extract_basic(segment, sr)
             with torch.no_grad():
                 features_tensor = torch.FloatTensor(features).unsqueeze(0).to(self.device)
@@ -142,8 +142,8 @@ class EmotionAnalysisEngine:
 
     def generate_emotion_constraint(self, emotion_result: EmotionResult) -> Dict:
         """
-        生成情感约束条件
-        用于指导后续的音乐编辑操作
+        
+        
         """
         constraint = {
             "target_emotion": emotion_result.primary_emotion.value,
@@ -153,11 +153,11 @@ class EmotionAnalysisEngine:
             ],
             "preserve_emotions": [
                 emotion.value for emotion, score in emotion_result.emotion_scores.items()
-                if score > 0.2  # 保持强度超过0.2的情感
+                if score > 0.2  # 0.2
             ],
             "avoid_emotions": [
                 emotion.value for emotion, score in emotion_result.emotion_scores.items()
-                if score < 0.05  # 避免强度低于0.05的情感
+                if score < 0.05  # 0.05
             ],
             "temporal_stability": np.std(emotion_result.temporal_trajectory) < 0.3
         }
@@ -166,42 +166,42 @@ class EmotionAnalysisEngine:
 
 
 class AudioFeatureExtractor:
-    """音频特征提取器"""
+    """Audio features"""
     
     def extract(self, audio_data: np.ndarray, sr: int) -> np.ndarray:
-        """提取完整的音频特征"""
+        """Audio features"""
         features = []
         
-        # 1. MFCC特征
+        # 1. MFCC
         mfcc = librosa.feature.mfcc(y=audio_data, sr=sr, n_mfcc=13)
         features.append(np.mean(mfcc, axis=1))
         features.append(np.std(mfcc, axis=1))
         
-        # 2. 色度特征
+        # 2. 
         chroma = librosa.feature.chroma(y=audio_data, sr=sr)
         features.append(np.mean(chroma, axis=1))
         
-        # 3. 频谱对比度
+        # 3. 
         contrast = librosa.feature.spectral_contrast(y=audio_data, sr=sr)
         features.append(np.mean(contrast, axis=1))
         
-        # 4. 零交叉率
+        # 4. 
         zcr = librosa.feature.zero_crossing_rate(audio_data)
         features.append([np.mean(zcr)])
         
-        # 5. 频谱质心
+        # 5. 
         centroid = librosa.feature.spectral_centroid(y=audio_data, sr=sr)
         features.append([np.mean(centroid)])
         
-        # 6. 频谱滚降
+        # 6. 
         rolloff = librosa.feature.spectral_rolloff(y=audio_data, sr=sr)
         features.append([np.mean(rolloff)])
         
         return np.concatenate(features)
     
     def extract_basic(self, audio_data: np.ndarray, sr: int) -> np.ndarray:
-        """提取基础特征 (快速版本)"""
-        # 仅提取关键特征用于实时分析
+        """ ()"""
+        # 
         mfcc = librosa.feature.mfcc(y=audio_data, sr=sr, n_mfcc=8)
         chroma = librosa.feature.chroma(y=audio_data, sr=sr)
         
@@ -214,7 +214,7 @@ class AudioFeatureExtractor:
 
 
 class EmotionClassifier(nn.Module):
-    """情感分类模型"""
+    """"""
     
     def __init__(self, input_dim: int = 48, num_emotions: int = 6):
         super().__init__()
@@ -238,34 +238,34 @@ class EmotionClassifier(nn.Module):
         return self.classifier(x)
 
 
-# 使用示例和测试
+# 
 if __name__ == "__main__":
-    # 创建情感分析引擎
+    # createEmotion analysis
     emotion_engine = EmotionAnalysisEngine()
     
-    # 加载测试音频
-    audio_file = "test_audio.wav"  # 替换为实际音频文件
+    # load
+    audio_file = "test_audio.wav"  # 
     try:
         audio_data, sr = librosa.load(audio_file, sr=22050)
         
-        # 分析情感
+        # 
         result = emotion_engine.analyze(audio_data, sr)
         
-        print(f"主要情感: {result.primary_emotion.value}")
-        print(f"情感强度: {result.intensity:.3f}")
-        print(f"置信度: {result.confidence:.3f}")
-        print("\n各情感得分:")
+        print(f": {result.primary_emotion.value}")
+        print(f": {result.intensity:.3f}")
+        print(f": {result.confidence:.3f}")
+        print("\n:")
         for emotion, score in result.emotion_scores.items():
             print(f"  {emotion.value}: {score:.3f}")
         
-        # 生成情感约束
+        # generate
         constraint = emotion_engine.generate_emotion_constraint(result)
-        print(f"\n情感约束: {constraint}")
+        print(f"\n: {constraint}")
         
     except Exception as e:
-        print(f"测试需要音频文件: {e}")
+        print(f": {e}")
         
-        # 生成随机测试数据
-        test_audio = np.random.randn(22050 * 3)  # 3秒随机音频
+        # generate
+        test_audio = np.random.randn(22050 * 3)  # 3
         result = emotion_engine.analyze(test_audio, 22050)
-        print(f"随机音频测试 - 主要情感: {result.primary_emotion.value}")
+        print(f" - : {result.primary_emotion.value}")

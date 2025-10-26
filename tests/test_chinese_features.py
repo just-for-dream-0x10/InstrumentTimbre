@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Test suite for Chinese instrument features
-中国乐器特征测试套件
+
 """
 
 import pytest

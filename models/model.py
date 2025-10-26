@@ -322,20 +322,20 @@ class InstrumentTimbreModel:
             checkpoint = torch.load(model_path, map_location=self.device)
 
             try:
-                # 尝试正常加载
+                # load
                 self.encoder.load_state_dict(checkpoint["encoder"])
                 self.decoder.load_state_dict(checkpoint["decoder"])
                 logger.info(f"Model loaded from {model_path}")
             except Exception as e:
-                # 如果正常加载失败，启用兼容模式
+                # loadfailed，
                 logger.error(f"Error loading model from {model_path}: {e}")
                 logger.info("Enabling compatibility mode for older model format")
                 self.compat_mode = True
 
-                # 创建维度适配器 - 用于处理3D和4D张量之间的转换
+                # create - process3D4D
                 self.dimension_adapter = DimensionAdapter().to(self.device)
 
-                # 尝试加载部分权重
+                # load
                 self._load_partial_weights(checkpoint)
 
             # Load configuration if exists
@@ -512,7 +512,7 @@ class InstrumentTimbreModel:
             Numpy array of timbre features
         """
         try:
-            # 支持直接传入音频数据
+            # 
             if isinstance(audio_path, torch.Tensor) or isinstance(
                 audio_path, np.ndarray
             ):
@@ -521,26 +521,26 @@ class InstrumentTimbreModel:
                 else:
                     audio_data = audio_path
 
-                # 如果是单声道，添加通道维度
+                # ，
                 if audio_data.dim() == 1:
                     audio_data = audio_data.unsqueeze(0)
 
-                # 获取采样率 - 使用默认值
+                #  - 
                 sample_rate = 44100
             else:
-                # 从文件加载音频
+                # load
                 audio_data, sample_rate = torchaudio.load(audio_path)
 
-                # 如果是立体声，转换为单声道
+                # ，
                 if audio_data.size(0) > 1:
                     audio_data = torch.mean(audio_data, dim=0, keepdim=True)
 
-            # 划分音频段
+            # 
             segment_length = int(segment_duration * sample_rate)
             hop_size = int(hop_length * sample_rate)
             segments = []
 
-            # 如果音频太短，补零
+            # ，
             if audio_data.size(1) < segment_length:
                 padded = torch.zeros(
                     (audio_data.size(0), segment_length), device=audio_data.device
@@ -548,24 +548,24 @@ class InstrumentTimbreModel:
                 padded[:, : audio_data.size(1)] = audio_data
                 segments.append(padded)
             else:
-                # 将音频分割成重叠的段
+                # 
                 for start in range(
                     0, audio_data.size(1) - segment_length + 1, hop_size
                 ):
                     segments.append(audio_data[:, start : start + segment_length])
 
-            # 为每个段提取特征
+            # 
             all_features = []
             for segment in segments:
-                # 使用mel谱、色度图和MFCC作为输入特征
+                # mel、MFCC
                 mel_spec = self.to_mel_spectrogram(segment, sample_rate)
                 chroma = self.to_chroma(segment, sample_rate)
                 mfcc = self.to_mfcc(segment, sample_rate)
 
-                # 将所有特征拼接在一起 [C, F, T]
+                #  [C, F, T]
                 combined_features = torch.cat([mel_spec, chroma, mfcc], dim=0)
 
-                # 检查特征维度
+                # 
                 if (
                     torch.isnan(combined_features).any()
                     or torch.isinf(combined_features).any()
@@ -573,7 +573,7 @@ class InstrumentTimbreModel:
                     print(
                         f"Warning: NaN or Inf values in features. Using fallback method."
                     )
-                    # 使用简单特征作为备选
+                    # 
                     mel_spec = torchaudio.transforms.MelSpectrogram(
                         sample_rate=sample_rate, n_fft=2048, hop_length=512, n_mels=128
                     )(segment)
@@ -585,12 +585,12 @@ class InstrumentTimbreModel:
                     combined_features = torch.cat([mel_spec, chroma, mfcc], dim=0)
 
                 try:
-                    # 提取模型特征 - 直接将特征传递给编码器
+                    #  - 
                     features = None
                     if instrument_type == "erhu" or "erhu" in str(audio_path).lower():
-                        # 使用中国传统乐器编码器
+                        # Instrument
                         try:
-                            # 首先尝试使用专门的编码器
+                            # 
                             encoder = self.encoders.get(
                                 "chinese", self.encoders["default"]
                             )
@@ -599,46 +599,46 @@ class InstrumentTimbreModel:
                             print(
                                 f"Chinese encoder failed: {e}. Trying default encoder."
                             )
-                            # 如果失败，尝试使用默认编码器
+                            # failed，
                             encoder = self.encoders["default"]
                             features = encoder(combined_features)
                     else:
-                        # 使用默认编码器
+                        # 
                         encoder = self.encoders.get(
                             instrument_type, self.encoders["default"]
                         )
                         features = encoder(combined_features)
 
-                    # 转换为numpy
+                    # numpy
                     if isinstance(features, torch.Tensor):
                         features = features.detach().cpu().numpy()
 
                     all_features.append(features)
 
                 except Exception as e:
-                    # 如果模型提取失败，使用备选方法
+                    # failed，
                     print(
                         f"Error extracting features with model: {e}. Using fallback method."
                     )
 
-                    # 使用传统特征作为备选
-                    # 计算平均值和标准差等统计特征
+                    # 
+                    # 
                     mean_features = combined_features.mean(dim=-1).cpu().numpy()
                     std_features = combined_features.std(dim=-1).cpu().numpy()
                     max_features = combined_features.max(dim=-1)[0].cpu().numpy()
 
-                    # 合并统计特征
+                    # 
                     statistical_features = np.concatenate(
                         [mean_features, std_features, max_features]
                     )
 
-                    # 如果需要特定尺寸的特征，进行调整
-                    target_dim = 128  # 目标维度
+                    # ，
+                    target_dim = 128  # 
                     if len(statistical_features) > target_dim:
-                        # 降维
+                        # 
                         statistical_features = statistical_features[:target_dim]
                     elif len(statistical_features) < target_dim:
-                        # 填充
+                        # 
                         pad_size = target_dim - len(statistical_features)
                         statistical_features = np.pad(
                             statistical_features, (0, pad_size), "constant"
@@ -646,14 +646,14 @@ class InstrumentTimbreModel:
 
                     all_features.append(statistical_features)
 
-            # 合并所有段的特征
+            # 
             if return_all_segments:
                 features = np.array(all_features)
             else:
-                # 计算平均特征向量
+                # 
                 features = np.mean(all_features, axis=0)
 
-            # 归一化
+            # 
             if normalize and features.size > 0:
                 features_mean = (
                     np.mean(features, axis=0)
@@ -663,7 +663,7 @@ class InstrumentTimbreModel:
                 features_std = (
                     np.std(features, axis=0) if features.ndim > 1 else np.std(features)
                 )
-                # 避免除以零
+                # 
                 features_std = np.where(features_std < 1e-6, 1.0, features_std)
                 features = (features - features_mean) / features_std
 
@@ -673,13 +673,13 @@ class InstrumentTimbreModel:
             print(f"Error in extract_timbre: {e}")
             print(f"Returning fallback feature vector")
 
-            # 返回一个合理的备选特征向量
-            fallback_dim = 128  # 默认特征维度
+            # 
+            fallback_dim = 128  # 
             if return_all_segments:
-                # 创建一个假设的段数 (例如5段)
+                # create (5)
                 return np.random.randn(5, fallback_dim) * 0.1
             else:
-                # 创建一个单一的特征向量
+                # create
                 return np.random.randn(fallback_dim) * 0.1
 
     def _extract_fallback_features(self, audio, sr, audio_file, output_dir):
@@ -687,32 +687,32 @@ class InstrumentTimbreModel:
         logger.info("Using fallback feature extraction method")
 
         try:
-            # 确定乐器类别
-            instrument_category = "弓弦类"  # 默认为弓弦类（二胡）
+            # Instrument
+            instrument_category = ""  # （）
             file_lower = audio_file.lower()
-            if "erhu" in file_lower or "二胡" in file_lower:
-                instrument_category = "弓弦类"  # 弓弦类
-            elif "pipa" in file_lower or "琵琶" in file_lower:
-                instrument_category = "弹拨类"  # 弹拨类
-            elif "dizi" in file_lower or "笛子" in file_lower:
-                instrument_category = "吹管类"  # 吹管类
+            if "erhu" in file_lower or "" in file_lower:
+                instrument_category = ""  # 
+            elif "pipa" in file_lower or "" in file_lower:
+                instrument_category = ""  # 
+            elif "dizi" in file_lower or "" in file_lower:
+                instrument_category = ""  # 
 
-            # 使用直接特征提取方法
+            # feature_extraction
             features = extract_chinese_instrument_features(
                 audio, sr, instrument_category=instrument_category
             )
 
-            # 将特征转换为嵌入向量
+            # 
             spectral_features = np.concatenate(
                 [
-                    features["spectral_centroid"].reshape(-1)[:32],  # 取前32个频谱质心特征
-                    features["spectral_contrast"].reshape(-1)[:32],  # 取前32个频谱对比度特征
-                    np.mean(features["harmonic_component"], axis=0)[:32],  # 取前32个谐波分量特征
-                    features["pitch_delta_stats"],  # 音高变化统计特征
+                    features["spectral_centroid"].reshape(-1)[:32],  # 32
+                    features["spectral_contrast"].reshape(-1)[:32],  # 32
+                    np.mean(features["harmonic_component"], axis=0)[:32],  # 32
+                    features["pitch_delta_stats"],  # 
                 ]
             )
 
-            # 填充或截断到128维
+            # 128
             embedding_size = 128
             if len(spectral_features) < embedding_size:
                 embedding = np.pad(
@@ -721,10 +721,10 @@ class InstrumentTimbreModel:
             else:
                 embedding = spectral_features[:embedding_size]
 
-            # 创建结果
+            # create
             result = {"embedding": embedding, "features": features}
 
-            # 保存特征文件
+            # save
             if output_dir:
                 os.makedirs(output_dir, exist_ok=True)
                 base_name = os.path.splitext(os.path.basename(audio_file))[0]
@@ -983,18 +983,18 @@ class InstrumentTimbreModel:
 
     def _load_partial_weights(self, checkpoint):
         """Load partial weights in compatibility mode"""
-        # 使用手动参数映射尝试加载部分权重
+        # load
         if "encoder" in checkpoint:
             encoder_state = checkpoint["encoder"]
 
-            # 手动加载共享层
+            # load
             own_state = self.encoder.state_dict()
             for name, param in encoder_state.items():
                 if name in own_state and own_state[name].shape == param.shape:
                     own_state[name].copy_(param)
                     logger.info(f"Loaded parameter: {name}")
 
-            # 处理注意力机制层的特殊情况
+            # process
             if (
                 "attention.gamma" in encoder_state
                 and "self_attention.gamma" in own_state
@@ -1028,7 +1028,7 @@ class InstrumentTimbreModel:
                 )
                 logger.info("Mapped attention mechanism parameters")
 
-        # 加载解码器权重
+        # load
         if "decoder" in checkpoint:
             decoder_state = checkpoint["decoder"]
             own_state = self.decoder.state_dict()
@@ -1040,7 +1040,7 @@ class InstrumentTimbreModel:
         logger.info("Partial model weights loaded in compatibility mode")
 
 
-# 添加一个维度适配器类来处理3D和4D张量之间的转换
+# process3D4D
 class DimensionAdapter(nn.Module):
     """Adapter class to handle dimension differences between old and new model formats"""
 

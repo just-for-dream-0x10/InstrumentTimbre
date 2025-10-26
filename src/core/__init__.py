@@ -1,12 +1,12 @@
 """
-核心模块包
+
 Core Modules Package
 
-System-6 核心模块：
-- 情感分析引擎 (emotion_engine.py)
-- 音乐结构分析器 (music_analyzer.py)  
-- 智能音轨操作器 (track_operator.py)
-- 主控制器 (controller.py)
+System-6 ：
+-  (emotion_engine.py)
+-  (music_analyzer.py)  
+-  (track_operator.py)
+-  (controller.py)
 """
 
 from .emotion_engine import (

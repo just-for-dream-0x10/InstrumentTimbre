@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Test suite for utility functions
-工具函数测试套件
+
 """
 
 import pytest

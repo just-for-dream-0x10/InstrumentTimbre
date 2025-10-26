@@ -1,8 +1,8 @@
 """
-音乐AI API接口 - System-6
+AI API - System-6
 Music AI API Interface
 
-提供RESTful API接口，便于集成和使用
+RESTful API，
 """
 
 from flask import Flask, request, jsonify, send_file
@@ -20,46 +20,46 @@ controller = MusicEditingController()
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
-    """健康检查"""
+    """Health check"""
     status = controller.get_system_status()
     return jsonify({
         'status': 'healthy',
         'system': status,
-        'message': '智能音乐编辑系统运行正常'
+        'message': ''
     })
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze_audio():
-    """分析音频情感和结构"""
+    """"""
     try:
-        # 获取音频数据
+        # 
         audio_data, sr = _get_audio_from_request(request)
         
-        # 分析音频
+        # 
         analysis = controller._analyze_audio(audio_data, sr)
         
         return jsonify({
             'success': True,
             'analysis': analysis,
-            'message': '音频分析完成'
+            'message': ''
         })
         
     except Exception as e:
         return jsonify({
             'success': False,
             'error': str(e),
-            'message': '音频分析失败'
+            'message': ''
         }), 400
 
 @app.route('/api/edit', methods=['POST'])
 def edit_music():
-    """编辑音乐"""
+    """"""
     try:
-        # 获取请求数据
+        # 
         data = request.get_json()
         audio_data, sr = _get_audio_from_request(request)
         
-        # 创建编辑请求
+        # create
         edit_request = MusicEditRequest(
             audio_data=audio_data,
             sr=sr,
@@ -70,10 +70,10 @@ def edit_music():
             quality_threshold=data.get('quality_threshold', 0.7)
         )
         
-        # 执行编辑
+        # 
         response = controller.edit_music(edit_request)
         
-        # 准备响应
+        # 
         result = {
             'success': response.success,
             'original_analysis': response.original_analysis,
@@ -83,9 +83,9 @@ def edit_music():
             'recommendations': response.recommendations
         }
         
-        # 如果成功，添加音频数据
+        # success，
         if response.success and response.result_audio is not None:
-            # 将音频编码为base64
+            # base64
             audio_buffer = io.BytesIO()
             sf.write(audio_buffer, response.result_audio, sr, format='WAV')
             audio_base64 = base64.b64encode(audio_buffer.getvalue()).decode()
@@ -97,44 +97,44 @@ def edit_music():
         return jsonify({
             'success': False,
             'error': str(e),
-            'message': '音乐编辑失败'
+            'message': ''
         }), 400
 
 @app.route('/api/operations', methods=['GET'])
 def get_supported_operations():
-    """获取支持的操作类型"""
+    """Operation"""
     return jsonify({
         'operations': {
-            'add': '添加音轨',
-            'replace': '替换音轨', 
-            'modify': '修改音轨',
-            'delete': '删除音轨',
-            'enhance': '增强音轨'
+            'add': '',
+            'replace': '', 
+            'modify': '',
+            'delete': '',
+            'enhance': ''
         },
         'roles': {
-            'bass': '低音',
-            'melody': '主旋律',
-            'harmony': '和声',
-            'rhythm': '节奏',
-            'accompaniment': '伴奏',
-            'decoration': '装饰音'
+            'bass': 'bass',
+            'melody': '',
+            'harmony': 'harmony',
+            'rhythm': 'rhythm',
+            'accompaniment': '',
+            'decoration': ''
         },
         'emotions': {
-            'happy': '快乐',
-            'sad': '悲伤',
-            'calm': '平静',
-            'excited': '激动',
-            'melancholy': '忧郁',
-            'angry': '愤怒'
+            'happy': '',
+            'sad': '',
+            'calm': '',
+            'excited': '',
+            'melancholy': '',
+            'angry': ''
         }
     })
 
 @app.route('/api/history', methods=['GET'])
 def get_operation_history():
-    """获取操作历史"""
+    """Operation"""
     history = controller.get_operation_history()
     
-    # 转换numpy类型为Python原生类型
+    # numpyPython
     serializable_history = []
     for record in history:
         serializable_record = {}
@@ -153,9 +153,9 @@ def get_operation_history():
     })
 
 def _get_audio_from_request(request) -> tuple:
-    """从请求中获取音频数据"""
+    """"""
     if 'audio' not in request.files:
-        # 尝试从JSON中获取base64编码的音频
+        # JSONbase64
         data = request.get_json()
         if data and 'audio_base64' in data:
             audio_bytes = base64.b64decode(data['audio_base64'])
@@ -163,9 +163,9 @@ def _get_audio_from_request(request) -> tuple:
             audio_data, sr = librosa.load(audio_buffer, sr=22050)
             return audio_data, sr
         else:
-            raise ValueError("未找到音频数据")
+            raise ValueError("")
     
-    # 从文件获取音频
+    # 
     audio_file = request.files['audio']
     audio_data, sr = librosa.load(audio_file, sr=22050)
     return audio_data, sr

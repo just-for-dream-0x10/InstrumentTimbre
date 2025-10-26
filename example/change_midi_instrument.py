@@ -241,7 +241,7 @@ def change_midi_instrument(
                         )
                         continue
                 else:
-                    # 其他乐器正常替换
+                    # Instrument
                     if msg.type == "program_change":
                         has_program_change = True
                         if msg.program != target_program:
@@ -250,7 +250,7 @@ def change_midi_instrument(
                             )
                         msg = msg.copy(program=target_program)
                 new_track.append(msg)
-            # 钢琴分支：不插入program_change
+            # ：program_change
             if (
                 target_instrument_name != "piano"
                 and not has_program_change

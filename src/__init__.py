@@ -1,8 +1,8 @@
 """
-智能音乐编辑与优化AI系统
+AI
 Music AI Editing and Optimization System
 
-基于情感驱动的音乐编辑和优化AI工具
+AI
 """
 
 __version__ = "0.1.0"

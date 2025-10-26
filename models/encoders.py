@@ -424,81 +424,81 @@ class ChineseInstrumentTimbreEncoder(nn.Module):
                     f"Expected {self.input_channels} channels, got {x.shape[1]}"
                 )
 
-        # 兼容性处理：如果输入是4D [B, C, F, T]，添加通道维度变成5D [B, C, 1, F, T]
+        # process：4D [B, C, F, T]，5D [B, C, 1, F, T]
         if len(x.shape) == 4:
             # [B, C, F, T] -> [B, C, 1, F, T]
             x = x.unsqueeze(2)
 
         try:
-            # 多尺度卷积特征提取
+            # feature_extraction
             x_small = F.leaky_relu(self.norm1(self.conv_small(x)))
             x_medium = F.leaky_relu(self.norm2(self.conv_medium(x)))
             x_large = F.leaky_relu(self.norm3(self.conv_large(x)))
 
-            # 压缩通道维度，转换为4D张量 [B, C, F, T]
+            # ，4D [B, C, F, T]
             x_small = x_small.squeeze(2)
             x_medium = x_medium.squeeze(2)
             x_large = x_large.squeeze(2)
 
-            # 频率注意力
+            # 
             x_small = self.freq_attention1(x_small)
             x_large = self.freq_attention2(x_large)
 
-            # 合并多尺度特征
+            # 
             x_combined = torch.cat([x_small, x_medium, x_large], dim=1)
 
-            # 自注意力
+            # 
             x_attention = self.self_attention(x_combined)
 
-            # 展平特征
+            # 
             batch_size = x_attention.size(0)
             x_flat = x_attention.view(batch_size, -1)
 
-            # 全连接层
+            # 
             x_fc1 = F.leaky_relu(self.fc1(x_flat))
             x_fc1 = self.dropout(x_fc1)
             embedding = self.fc2(x_fc1)
 
-            # 如果原始输入是3D且我们添加了批次维度，移除批次维度
+            # 3D，
             if added_batch:
                 embedding = embedding.squeeze(0)
 
             return embedding
 
         except Exception as e:
-            # 处理计算过程中的错误
+            # processerror
             print(f"Error in ChineseInstrumentTimbreEncoder forward pass: {e}")
 
-            # 兼容性处理：尝试简化方法
+            # process：
             try:
-                # 简化处理：如果前向传播失败，尝试使用更简单的前向传播
-                # 移除批次维度以适配旧模型（如果存在）
+                # process：failed，
+                # （）
                 if len(x.shape) == 5:  # [B, C, D, F, T]
                     x = x.squeeze(2)  # [B, C, F, T]
 
-                # 使用平均池化简化特征
-                x = F.adaptive_avg_pool2d(x, (16, 16))  # 调整为固定大小
+                # 
+                x = F.adaptive_avg_pool2d(x, (16, 16))  # 
                 x_flat = x.view(x.size(0), -1)
 
-                # 如果维度仍然不匹配fc1，调整x_flat
+                # fc1，x_flat
                 if x_flat.shape[1] != self.fc1.in_features:
-                    # 使用线性插值调整大小
+                    # 
                     required_dim = self.fc1.in_features
                     current_dim = x_flat.shape[1]
 
-                    # 重塑为2D，以便可以应用插值
+                    # 2D，
                     x_reshaped = x_flat.view(x_flat.size(0), 1, 1, current_dim)
                     x_interpolated = F.interpolate(
                         x_reshaped, size=(1, required_dim), mode="linear"
                     )
                     x_flat = x_interpolated.view(x_flat.size(0), required_dim)
 
-                # 使用全连接层
+                # 
                 x_fc1 = F.leaky_relu(self.fc1(x_flat))
                 x_fc1 = self.dropout(x_fc1)
                 embedding = self.fc2(x_fc1)
 
-                # 如果原始输入是3D且我们添加了批次维度，移除批次维度
+                # 3D，
                 if added_batch:
                     embedding = embedding.squeeze(0)
 
@@ -506,13 +506,13 @@ class ChineseInstrumentTimbreEncoder(nn.Module):
 
             except Exception as e2:
                 print(f"Simplified forward pass also failed: {e2}")
-                # 如果仍然失败，创建一个随机嵌入作为备选
+                # failed，create
                 batch_size = 1 if added_batch else x.shape[0]
                 random_embedding = torch.randn(
                     batch_size, self.fc2.out_features, device=x.device
                 )
 
-                # 如果原始输入是3D且我们添加了批次维度，移除批次维度
+                # 3D，
                 if added_batch:
                     random_embedding = random_embedding.squeeze(0)
 
